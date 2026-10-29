@@ -33,7 +33,7 @@ def main(argv=None):
     s = sub.add_parser("payouts"); s.add_argument("id")
     sub.add_parser("mcp", help="run the stdio MCP server")
     s = sub.add_parser("init", help="first run: create the database, collect every platform, write public/ snapshots"); s.add_argument("--out", default="public"); s.add_argument("--no-repos", action="store_true")
-    s = sub.add_parser("export-snapshot", help="write JSON snapshots of the tracked state"); s.add_argument("--out", default="public")
+    s = sub.add_parser("export-snapshot", help="write JSON snapshots of the tracked state"); s.add_argument("--out", default="public"); s.add_argument("--exclude-platforms", help="csv of platforms to leave out of the published files")
     s = sub.add_parser("import-snapshot", help="load JSON snapshots into the database"); s.add_argument("--in", dest="indir", default="public")
     a = ap.parse_args(argv)
     if a.cmd == "sync":
@@ -137,7 +137,7 @@ def main(argv=None):
     if a.cmd == "export-snapshot":
         from . import snapshot
         out = a.out if os.path.isabs(a.out) else os.path.join(config.ROOT, a.out)
-        print(json.dumps(snapshot.export_snapshot(_con(), out))); print(out); return
+        print(json.dumps(snapshot.export_snapshot(_con(), out, [x.strip() for x in (a.exclude_platforms or "").split(",") if x.strip()]))); print(out); return
     if a.cmd == "import-snapshot":
         from . import snapshot
         src = a.indir if os.path.isabs(a.indir) else os.path.join(config.ROOT, a.indir)

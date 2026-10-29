@@ -17,23 +17,27 @@ def _write(path, obj):
         json.dump(obj, f, ensure_ascii=False, indent=0, sort_keys=True)
         f.write("\n")
 
-def export_snapshot(con, out_dir):
+def export_snapshot(con, out_dir, exclude_platforms=None):
+    """Write the snapshot files; `exclude_platforms` leaves whole platforms out (see docs/PLATFORMS.md on redistribution)."""
     os.makedirs(out_dir, exist_ok=True)
     since = config.iso(config.utcnow() - dt.timedelta(days=WINDOW_DAYS))
+    excl = sorted(exclude_platforms or [])
+    pf = "p.platform NOT IN (%s)" % ",".join("?" * len(excl)) if excl else "1=1"
     files = {}
-    files["programs.json"] = _rows(con, "SELECT * FROM programs ORDER BY id")
-    files["targets.json"] = _rows(con, "SELECT * FROM targets ORDER BY program_id, norm")
-    files["repos.json"] = _rows(con, "SELECT url, provider, provider_host, full_name, ref_name, head_sha, last_polled_at, last_changed_at, last_error, fail_count, active FROM repos ORDER BY url")
-    files["target_changes_90d.json"] = _rows(con, """SELECT c.id, c.program_id, t.norm AS target_norm, c.change_type, c.changed_at, c.diff, c.source FROM target_changes c JOIN targets t ON t.id=c.target_id
-                                                   WHERE c.changed_at>=? ORDER BY c.id""", (since,))
-    files["program_events_90d.json"] = _rows(con, "SELECT id, program_id, observed_at, change_type, category, before, after, counts, source FROM program_events WHERE observed_at>=? ORDER BY id", (since,))
-    files["repo_changes_90d.json"] = _rows(con, """SELECT rc.id, r.url AS repo_url, rc.event_type, rc.source, rc.ref_name, rc.before_sha, rc.after_sha, rc.observed_at, rc.commit_count, rc.comparison, rc.files, rc.push_kind
-                                                 FROM repo_changes rc JOIN repos r ON r.id=rc.repo_id WHERE rc.observed_at>=? ORDER BY rc.id""", (since,))
-    files["payouts_90d.json"] = _rows(con, "SELECT program_id, metric, amount, currency, unit, source_label, source_field, source_url, period, basis, observed_at FROM payout_observations WHERE observed_at>=? ORDER BY id", (since,))
+    files["programs.json"] = _rows(con, f"SELECT p.* FROM programs p WHERE {pf} ORDER BY p.id", excl)
+    files["targets.json"] = _rows(con, f"SELECT t.* FROM targets t JOIN programs p ON p.id=t.program_id WHERE {pf} ORDER BY t.program_id, t.norm", excl)
+    files["repos.json"] = _rows(con, f"""SELECT r.url, r.provider, r.provider_host, r.full_name, r.ref_name, r.head_sha, r.last_polled_at, r.last_changed_at, r.last_error, r.fail_count, r.active FROM repos r
+                                        WHERE EXISTS (SELECT 1 FROM targets t JOIN programs p ON p.id=t.program_id WHERE t.repo_url=r.url AND {pf}) ORDER BY r.url""", excl)
+    files["target_changes_90d.json"] = _rows(con, f"""SELECT c.id, c.program_id, t.norm AS target_norm, c.change_type, c.changed_at, c.diff, c.source FROM target_changes c JOIN targets t ON t.id=c.target_id
+                                                   JOIN programs p ON p.id=c.program_id WHERE c.changed_at>=? AND {pf} ORDER BY c.id""", [since] + excl)
+    files["program_events_90d.json"] = _rows(con, f"SELECT e.id, e.program_id, e.observed_at, e.change_type, e.category, e.before, e.after, e.counts, e.source FROM program_events e JOIN programs p ON p.id=e.program_id WHERE e.observed_at>=? AND {pf} ORDER BY e.id", [since] + excl)
+    files["repo_changes_90d.json"] = _rows(con, f"""SELECT rc.id, r.url AS repo_url, rc.event_type, rc.source, rc.ref_name, rc.before_sha, rc.after_sha, rc.observed_at, rc.commit_count, rc.comparison, rc.files, rc.push_kind
+                                                 FROM repo_changes rc JOIN repos r ON r.id=rc.repo_id WHERE rc.observed_at>=? AND EXISTS (SELECT 1 FROM targets t JOIN programs p ON p.id=t.program_id WHERE t.repo_url=r.url AND {pf}) ORDER BY rc.id""", [since] + excl)
+    files["payouts_90d.json"] = _rows(con, f"SELECT o.program_id, o.metric, o.amount, o.currency, o.unit, o.source_label, o.source_field, o.source_url, o.period, o.basis, o.observed_at FROM payout_observations o JOIN programs p ON p.id=o.program_id WHERE o.observed_at>=? AND {pf} ORDER BY o.id", [since] + excl)
     files["collector_runs.json"] = _rows(con, """SELECT platform, started_at, finished_at, ok, programs, error FROM collector_runs WHERE id IN (SELECT MAX(id) FROM collector_runs GROUP BY platform) ORDER BY platform""")
     marks = ",".join("?" * len(KV_KEYS))
     kv = {r["k"]: db.uj(r["v"]) for r in con.execute(f"SELECT k, v FROM kv WHERE k LIKE 'platform_synced:%' OR k IN ({marks})", KV_KEYS)}
-    files["meta.json"] = {"exported_at": config.iso(), "version": config.VERSION, "window_days": WINDOW_DAYS, "kv": kv,
+    files["meta.json"] = {"exported_at": config.iso(), "version": config.VERSION, "window_days": WINDOW_DAYS, "kv": kv, "excluded_platforms": excl,
                           "counts": {k: len(v) for k, v in files.items() if isinstance(v, list)}}
     for name, obj in files.items():
         _write(os.path.join(out_dir, name), obj)

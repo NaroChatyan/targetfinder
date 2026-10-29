@@ -1,5 +1,5 @@
 """Local scheduling: systemd user units / launchd plist text, and `sweep --sync` ordering."""
-import os, sys, unittest
+import contextlib, io, os, sys, unittest
 from unittest import mock
 from tests import helpers  # noqa: F401
 from targetfinder import schedule, cli
@@ -32,7 +32,7 @@ class SweepSync(unittest.TestCase):
     def test_sweep_sync_flag_runs_sync_first(self):
         calls = []
         with mock.patch("targetfinder.sync.run", side_effect=lambda **kw: calls.append("sync") or {}), \
-             mock.patch("targetfinder.sweep.run", side_effect=lambda *a, **kw: calls.append("sweep") or ("report", {})):
+             mock.patch("targetfinder.sweep.run", side_effect=lambda *a, **kw: calls.append("sweep") or ("report", {})), contextlib.redirect_stdout(io.StringIO()):
             cli.main(["sweep", "--sync", "--no-write"])
         self.assertEqual(calls, ["sync", "sweep"])
 
@@ -44,7 +44,7 @@ class SweepSync(unittest.TestCase):
             if len(sleeps) >= 2: raise KeyboardInterrupt
         with mock.patch("targetfinder.sync.run", side_effect=lambda **kw: calls.append("sync") or {}), \
              mock.patch("targetfinder.sweep.run", side_effect=lambda *a, **kw: calls.append("sweep") or ("report", {})), \
-             mock.patch("time.sleep", side_effect=fake_sleep):
+             mock.patch("time.sleep", side_effect=fake_sleep), contextlib.redirect_stdout(io.StringIO()):
             cli.main(["watch", "--every", "2"])
         self.assertEqual(calls, ["sync", "sweep", "sync", "sweep"]); self.assertEqual(sleeps, [7200, 7200])
 

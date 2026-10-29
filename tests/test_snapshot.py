@@ -66,5 +66,18 @@ class Snapshot(unittest.TestCase):
         self.assertEqual(sorted(tuple(r) for r in con2.execute("SELECT change_type, program_id FROM target_changes ORDER BY id DESC LIMIT 2")), [("added", "testplat:acme"), ("readded", "testplat:beta")])
 
 
+class ExcludePlatforms(unittest.TestCase):
+    def test_export_can_leave_a_platform_out(self):
+        helpers.temp_db(); con = db.connect(); self.addCleanup(con.close)
+        populate(con)
+        helpers.apply(con, [helpers.program("otherplat:zeta", [helpers.target("z.zeta.test")])], platform="OtherPlat")
+        out = tempfile.mkdtemp(prefix="tf-snap-")
+        snapshot.export_snapshot(con, out, exclude_platforms=["OtherPlat"])
+        progs = json.load(open(os.path.join(out, "programs.json")))
+        self.assertEqual({p["platform"] for p in progs}, {"TestPlat"})
+        self.assertFalse(any(t["program_id"].startswith("otherplat:") for t in json.load(open(os.path.join(out, "targets.json")))))
+        self.assertEqual(json.load(open(os.path.join(out, "meta.json")))["excluded_platforms"], ["OtherPlat"])
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -3,6 +3,8 @@
 Every collector reads only unauthenticated, public endpoints at low rates (≥ 1 request/second per host, one
 request in flight per host, descriptive User-Agent). This file records what each platform's public terms say
 about automated access and reuse, where that was checked, and the decision for the public release.
+Request rates are the per-host minimum delays in `targetfinder/config.py` (`HOST_DELAY`); the User-Agent is
+`targetfinder/<version> (+repository url)`. Repository HEAD polling uses `git ls-remote` with at most 4 workers.
 Terms change; re-check before a release. None of this is legal advice.
 
 | platform | endpoints used | rate | terms checked | clause found | decision |
@@ -14,7 +16,7 @@ Terms change; re-check before a release. None of this is legal advice.
 | HackenProof | `hackenproof.com/programs?page=N`, `/programs/<slug>` (Nuxt payload) | 1.0 s | Terms and Conditions PDF (hproof-static S3 bucket), 2026-10-29; robots.txt allows all | IP clause: content may not be reproduced/distributed "for commercial or illegal purposes without our prior written permission"; personal-use license granted; no automation clause | keep collector (non-commercial); snapshot redistribution: see note |
 | Immunefi | `immunefi.com/bug-bounty/` and `/bug-bounty/<slug>/scope/` (Next.js RSC payload) | 1.0 s | Terms of Use (immunefi.com/terms-of-use), 2026-10-29 | **explicit:** §4 "Use any robot, spider, or other similar automatic device, process, or means to access the Website for any purpose"; §7 no reproduction/distribution/derivative works | **disabled by default in the public release** (`TARGETFINDER_ENABLE_IMMUNEFI=1` opts in for personal use at your own risk); not included in published snapshots |
 | Sherlock | `audits.sherlock.xyz/bug-bounties` (RSC payload), `/bug-bounties/<id>` | 1.0 s | Platform rules (docs.sherlock.xyz), 2026-10-29; no terms-of-service page found on audits.sherlock.xyz or docs; robots.txt allows all | "Automated testing of services that generates significant amounts of traffic is not permitted" (about hunting project services, not the listing) | keep |
-| bounty-targets-data | `raw.githubusercontent.com/arkadiyt/bounty-targets-data` | 0.2 s | repository license | MIT | keep |
+| bounty-targets-data | `raw.githubusercontent.com/arkadiyt/bounty-targets-data` | 1.0 s | repository license | MIT | keep |
 
 **Note on redistribution.** Collecting for personal use and publishing hourly snapshots are different acts.
 The published snapshots contain only structured scope facts (identifiers, types, eligibility, dates) that the
