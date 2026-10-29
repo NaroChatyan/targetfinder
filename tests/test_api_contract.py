@@ -2,7 +2,6 @@
 import json, os, re, unittest
 from tests import helpers
 
-helpers.temp_db()
 from targetfinder import db, config, repowatch, mcp_server, collectors  # noqa: E402
 
 ID_RE = re.compile(r"^[a-z0-9-]+:[a-z0-9._/-]+$")
@@ -34,6 +33,7 @@ def seed():
 class ApiContract(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        helpers.temp_db()   # per class, not at import: unittest imports every module before running any, so module-level setup would be shared
         seed()
         cls.srv, cls.base = helpers.start_api()
 
@@ -141,7 +141,8 @@ class ApiContract(unittest.TestCase):
         self.assertEqual(collectors.program_id("Sherlock", 56), "sherlock:56")
         cdir = os.path.join(helpers.ROOT, "targetfinder", "collectors")
         for name in ("hackerone", "bugcrowd", "intigriti", "yeswehack", "hackenproof", "immunefi", "sherlock"):
-            src = open(os.path.join(cdir, name + ".py")).read()
+            with open(os.path.join(cdir, name + ".py")) as f:
+                src = f.read()
             self.assertIn("program_id(", src, f"{name} must build ids with collectors.program_id")
             self.assertNotRegex(src, r'f"[A-Za-z]+:\{', f"{name} builds a hand-made id")
         con = db.connect()

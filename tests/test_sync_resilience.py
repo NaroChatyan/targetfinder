@@ -2,21 +2,21 @@
 import datetime as dt, unittest
 from tests import helpers
 
-helpers.temp_db()
 from targetfinder import db, config, sync, queries, sweep, collectors  # noqa: E402
 
 
 class Resilience(unittest.TestCase):
     def setUp(self):
+        helpers.temp_db()
         self.con = db.connect()
         self.addCleanup(self.con.close)   # close even when setUp fails, or the next test blocks on the write lock
         for t in ("programs", "targets", "target_changes", "program_events", "collector_runs", "sync_runs", "kv"):
             self.con.execute(f"DELETE FROM {t}")
         self.con.commit()
-        self._registry = dict(collectors.REGISTRY)
+        self._registry = dict(collectors.REGISTRY); self._load_all = sync.load_all
 
     def tearDown(self):
-        collectors.REGISTRY.clear(); collectors.REGISTRY.update(self._registry)
+        collectors.REGISTRY.clear(); collectors.REGISTRY.update(self._registry); sync.load_all = self._load_all
 
     def _seed(self):
         helpers.apply(self.con, [helpers.program("testplat:acme", [helpers.target("a.acme.test"), helpers.target("b.acme.test"), helpers.target("c.acme.test")])])
