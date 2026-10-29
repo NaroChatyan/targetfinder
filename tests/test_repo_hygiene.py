@@ -1,12 +1,13 @@
 """Repository hygiene: the public tree carries no private data, no third-party dumps and no vendor strings."""
-import os
+import os, subprocess
 import unittest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Strings that must never appear in the public repository (stored hex-encoded so this file passes its own check).
 FORBIDDEN = [bytes.fromhex(h).decode() for h in ("62627261646172", "6262725f6c697665")]
 SKIP_DIRS = {".git", ".superpowers", "__pycache__", "data", "sweeps"}
-PRIVATE_TOP_LEVEL = {"seed", "data", "compat"}
+PRIVATE_TOP_LEVEL = {"seed", "compat"}
+RUNTIME_DIRS = {"data", "sweeps"}   # created at run time; must be git-ignored, never tracked
 
 
 def repo_files():
@@ -23,6 +24,11 @@ class RepoHygiene(unittest.TestCase):
         self.assertTrue(os.path.isfile(os.path.join(ROOT, "LICENSE")), "LICENSE missing")
         for top in PRIVATE_TOP_LEVEL:
             self.assertFalse(os.path.exists(os.path.join(ROOT, top)), f"private directory {top}/ present")
+        ignored = open(os.path.join(ROOT, ".gitignore"), encoding="utf-8").read().split()
+        for d in RUNTIME_DIRS:
+            self.assertIn(d + "/", ignored, f"{d}/ must be git-ignored")
+            tracked = subprocess.run(["git", "-C", ROOT, "ls-files", d], capture_output=True, text=True).stdout.strip()
+            self.assertEqual(tracked, "", f"{d}/ has tracked files: {tracked[:200]}")
         offenders = []
         for path in repo_files():
             try:
