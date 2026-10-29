@@ -1,6 +1,7 @@
 # Scoring model (heuristic, scoring version 1)
 
-Every number here is TargetFinder's own heuristic. The inputs are public counts and dates that the
+Every band and weight here is TargetFinder's own heuristic: competitionRisk and opportunity scores are
+comparative estimates derived from public counts, not measured probabilities. The inputs are public counts and dates that the
 platforms publish; the weights were chosen to order leads sensibly, not fitted to any measured
 outcome. Treat scores as a comparative ranking, never as a probability. Always read the program
 page before you spend time on a target.
