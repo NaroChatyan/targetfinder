@@ -119,7 +119,7 @@ class SignedUrls(unittest.TestCase):
     """Presigned S3 links carry temporary AWS credentials; they expire within hours and trip secret scanners when published."""
     def test_presigned_query_is_stripped_from_image_links(self):
         from targetfinder import normalize
-        u = "https://profile-photos.hackerone-user-content.com/x/y.png?response-content-type=image%2Fpng&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAQGK6FURQ3KWJ32R4%2F20261029%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20261029T142933Z&X-Amz-Signature=abc"
+        u = "https://profile-photos.hackerone-user-content.com/x/y.png?response-content-type=image%2Fpng&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=EXAMPLEKEYID%2F20261029%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20261029T142933Z&X-Amz-Signature=abc"
         self.assertEqual(normalize.public_url(u), "https://profile-photos.hackerone-user-content.com/x/y.png")
         self.assertEqual(normalize.public_url("https://example.test/a.png?v=3"), "https://example.test/a.png?v=3")
         self.assertIsNone(normalize.public_url(None))
@@ -128,6 +128,6 @@ class SignedUrls(unittest.TestCase):
         helpers.temp_db()
         from targetfinder import db
         con = db.connect(); self.addCleanup(con.close)
-        helpers.apply(con, [helpers.program("testplat:a", [helpers.target("a.example")], profile_picture="https://cdn.test/logo.png?X-Amz-Credential=ASIAQGK6FURQ3KWJ32R4%2Fx&X-Amz-Signature=s")])
+        helpers.apply(con, [helpers.program("testplat:a", [helpers.target("a.example")], profile_picture="https://cdn.test/logo.png?X-Amz-Credential=EXAMPLEKEYID%2Fx&X-Amz-Signature=s")])
         data = json.loads(con.execute("SELECT data FROM programs").fetchone()[0])
         self.assertEqual(data["profile_picture"], "https://cdn.test/logo.png")
