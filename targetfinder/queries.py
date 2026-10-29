@@ -260,9 +260,11 @@ def leads(con, tier, platforms=None, tags=None, search=None, page=1, page_size=1
         s = f"%{search.lower()}%"; where += " AND (LOWER(p.name) LIKE ? OR LOWER(p.handle) LIKE ? OR LOWER(p.platform) LIKE ?)"; args += [s, s, s]
     if updated_since: where += " AND p.last_updated>=?"; args.append(updated_since)
     added30 = {r[0]: r[1] for r in con.execute("SELECT program_id, COUNT(*) FROM target_changes WHERE change_type IN ('added','readded') AND changed_at>=? GROUP BY program_id", (model.since("30d"),))}
+    # Programs picked up by a platform's first listing were not "added" then: they predate tracking (no first_seen event), so only the launch date counts.
+    seen_live = {r[0] for r in con.execute("SELECT DISTINCT program_id FROM program_events WHERE change_type='first_seen'")}
     scored = []
     for r in con.execute(f"SELECT * FROM programs p WHERE {where}", args):
-        ld = intel.lead({"added_at": r["added_at"], "launch_at": r["launch_at"], "report_count": r["report_count"], "bounty_max": r["bounty_max"], "reward_status": r["reward_status"], "program_kind": r["program_kind"]}, added30.get(r["id"], 0))
+        ld = intel.lead({"added_at": r["added_at"] if r["id"] in seen_live else None, "launch_at": r["launch_at"], "report_count": r["report_count"], "bounty_max": r["bounty_max"], "reward_status": r["reward_status"], "program_kind": r["program_kind"]}, added30.get(r["id"], 0))
         if ld["tier"] in tiers:
             scored.append((ld["score"], r, ld))
     scored.sort(key=lambda x: -x[0])

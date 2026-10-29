@@ -276,7 +276,8 @@ def apply_platform(con, platform, res, log, source=None):
     con.commit()
     return stats
 
-def run(platforms=None, log=print, repo_poll=True, con=None):
+def run(platforms=None, log=print, repo_poll=True, con=None, on_platform=None):
+    """Collect every registered platform. `on_platform(name, stats)` is called after each one (stats carries 'error' on failure)."""
     config.ensure_dirs()
     own = con is None
     con = con or db.connect()
@@ -300,12 +301,14 @@ def run(platforms=None, log=print, repo_poll=True, con=None):
             con.execute("INSERT INTO collector_runs(platform, started_at, finished_at, ok, programs, error) VALUES(?,?,?,1,?,NULL)", (name, t0_iso, config.iso(), st.get("programs", 0)))
             con.commit()
             L(f"{name}: {st}")
+            if on_platform: on_platform(name, st)
         except Exception as ex:
             con.rollback()   # nothing from this platform is kept: stored programs and targets stay as they were
             allstats[name] = {"error": str(ex)[:300]}
             con.execute("INSERT INTO collector_runs(platform, started_at, finished_at, ok, programs, error) VALUES(?,?,?,0,0,?)", (name, t0_iso, config.iso(), str(ex)[:500]))
             con.commit()
             L(f"{name} FAILED: {ex}\n{traceback.format_exc(limit=3)}")
+            if on_platform: on_platform(name, allstats[name])
     if repo_poll:
         try:
             from . import repowatch

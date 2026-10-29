@@ -102,8 +102,10 @@ class ApiContract(unittest.TestCase):
         self.assertTrue(row["compare_url"].startswith("https://github.com/acme/app/compare/"))
 
     def test_leads_and_rankings(self):
-        res = self.get("/api/leads/top")   # both fixtures are fresh, lightly reported and pay: top tier
+        # the fixtures were picked up by the baseline listing, so freshness comes from their 2025 launch date and the tier is not "top"
+        res = next(r for r in (self.get(f"/api/leads/{t}") for t in ("top", "hot", "solid", "possible")) if r["items"])
         self.assertTrue(res["items"]); lead = res["items"][0]["lead"]
+        self.assertIn("Launched", lead["reason"])
         self.assertIn(lead["tier"], ("top", "hot", "solid", "possible"))
         for k in ("freshness", "competition", "reward", "scope_bonus"): self.assertIn(k, lead["factors"])
         self.get("/api/leads/elite", expect=400)

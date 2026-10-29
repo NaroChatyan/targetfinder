@@ -27,10 +27,15 @@ The `reason` field lists the inputs that were used.
 
 ## Lead tiers (program level)
 `score = 0.4·freshness + 0.3·competition + 0.3·reward + scope bonus` where freshness decays with
-days since the program was first seen (≤7 d 100 … >180 d 10), competition comes from the public
+days since the program appeared (≤7 d 100 … >180 d 10), competition comes from the public
 report count (≤2 100 … >50 15, unknown 50), reward from the max bounty (≥20k 100 … none 0) and the
 bonus is 2 points per confirmed new in-scope asset in 30 days (max 10).
 Tiers: `top` ≥78 and ≤30 days old · `hot` ≥70 · `solid` ≥40 · `possible` ≥20.
+
+"Appeared" means the platform's launch date, or the day TargetFinder saw the program join a listing it
+was already tracking. Programs picked up by the very first run of a platform are not treated as new:
+they predate tracking, so only their launch date counts. On a fresh install `top` is therefore often
+empty for a while; `hot` and `solid` still rank by launch date, reports and reward.
 
 ## Submission fee
 Platforms that charge a fee or deposit per report (HackenProof, Immunefi, Sherlock, some

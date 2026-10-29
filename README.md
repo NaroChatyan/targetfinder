@@ -30,7 +30,7 @@ Keep it fresh, pick one:
 ```bash
 bin/targetfinder sweep --sync             # on demand: collect, then report
 bin/targetfinder schedule install --every 1   # hourly in the background (systemd user timer on Linux, launchd on macOS; prints the schtasks command on Windows)
-bin/targetfinder watch --every 2          # foreground loop: sync + sweep every 2 hours, Ctrl-C to stop
+bin/targetfinder loop --every 2           # foreground loop: sync + sweep every 2 hours, Ctrl-C to stop
 ```
 
 Reports land in `sweeps/SWEEP_<date>.md` with a JSON twin. The first run records a baseline, so the
@@ -53,6 +53,11 @@ first sweep shows no "added" targets: changes are only reported for things Targe
 | `targetfinder serve` | HTTP API on `http://127.0.0.1:8787/api/` (docs/API.md) |
 | `targetfinder mcp` | MCP server over stdio (18 tools, docs/API.md) |
 | `targetfinder status` | counts, collectors, last successful run per platform, stale flags |
+| `targetfinder resolve nado` / `payouts <id>` | find a program id from a name; payout signals and platform-published facts |
+
+Every lookup prints a readable table; add `--json` for the same data as JSON. `targetfinder` alone prints
+the grouped command list, `targetfinder <command> -h` the options. Exit codes: 0 ok, 1 not found, 2 usage
+error, 3 every collector failed. Colors appear only on a terminal and honour `NO_COLOR`.
 
 ### Alerts (Discord / Telegram)
 

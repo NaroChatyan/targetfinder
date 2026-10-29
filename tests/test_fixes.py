@@ -83,6 +83,22 @@ class RepoFailures(unittest.TestCase):
         self.assertEqual((active, fc), (1, 3))
 
 
+class LeadFreshness(unittest.TestCase):
+    def test_baseline_programs_are_not_fresh(self):
+        """On a fresh install every program is first seen today; that is not 'added 0 days ago'."""
+        helpers.temp_db()
+        from targetfinder import db, queries
+        con = db.connect(); self.addCleanup(con.close)
+        helpers.apply(con, [helpers.program("testplat:old", [helpers.target("old.example")], launch_at=None)])
+        ld = queries.leads(con, None)["items"][0]["lead"]
+        self.assertEqual(ld["factors"]["freshness"], 10); self.assertNotIn("Added 0 days ago", ld["reason"])
+        helpers.apply(con, [helpers.program("testplat:old", [helpers.target("old.example")], launch_at=None),
+                            helpers.program("testplat:new", [helpers.target("new.example")], launch_at=None)])
+        by_id = {i["id"]: i["lead"] for i in queries.leads(con, None)["items"]}
+        self.assertEqual(by_id["testplat:new"]["factors"]["freshness"], 100)
+        self.assertEqual(by_id["testplat:old"]["factors"]["freshness"], 10)
+
+
 class StatusShape(unittest.TestCase):
     def test_last_sync_stats_is_decoded(self):
         helpers.temp_db()

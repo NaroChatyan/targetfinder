@@ -160,6 +160,7 @@ def score_target(t, program, now=None):
 def lead(p, scope_added_30d=0, now=None):
     now = now or config.utcnow()
     added = config.parse_ts(p.get("added_at") or p.get("launch_at"))
+    basis = "Added" if p.get("added_at") else "Launched"
     days = _days_between(added, now) if added else 9999
     if days <= 7: fresh = 100
     elif days <= 14: fresh = 90
@@ -192,7 +193,7 @@ def lead(p, scope_added_30d=0, now=None):
     else: tier = None
     desc = {"top": "Very fresh, lightly reported, and strong payout potential.", "hot": "Fresh or lightly reported with good payout potential.",
             "solid": "Solid reward potential with manageable competition.", "possible": "Worth a look; weaker on freshness or competition."}
-    reason = [f"Added {int(days)} days ago" if days < 9999 else "Launch date unknown", (f"{rc} public reports" if rc is not None else "Report count unavailable"),
+    reason = [f"{basis} {int(days)} days ago" if days < 9999 else "Launch date unknown", (f"{rc} public reports" if rc is not None else "Report count unavailable"),
               (f"Up to ${mb:,.0f} bounty" if mb > 0 else "No disclosed bounty")]
     if scope_added_30d: reason.append(f"{scope_added_30d} confirmed new in-scope asset{'s' if scope_added_30d != 1 else ''} in 30 days")
     return {"tier": tier, "score": score, "factors": {"freshness": fresh, "competition": comp, "reward": rew, "scope_bonus": bonus}, "reason": " · ".join(reason),

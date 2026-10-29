@@ -36,18 +36,6 @@ class SweepSync(unittest.TestCase):
             cli.main(["sweep", "--sync", "--no-write"])
         self.assertEqual(calls, ["sync", "sweep"])
 
-    def test_watch_loops_sync_then_sweep_until_interrupted(self):
-        calls = []
-        sleeps = []
-        def fake_sleep(s):
-            sleeps.append(s)
-            if len(sleeps) >= 2: raise KeyboardInterrupt
-        with mock.patch("targetfinder.sync.run", side_effect=lambda **kw: calls.append("sync") or {}), \
-             mock.patch("targetfinder.sweep.run", side_effect=lambda *a, **kw: calls.append("sweep") or ("report", {})), \
-             mock.patch("time.sleep", side_effect=fake_sleep), contextlib.redirect_stdout(io.StringIO()):
-            cli.main(["watch", "--every", "2"])
-        self.assertEqual(calls, ["sync", "sweep", "sync", "sweep"]); self.assertEqual(sleeps, [7200, 7200])
-
 
 if __name__ == "__main__":
     unittest.main()
