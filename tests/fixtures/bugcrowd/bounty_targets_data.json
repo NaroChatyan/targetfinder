@@ -1,0 +1,239 @@
+[
+ {
+  "allows_disclosure": false,
+  "managed_by_bugcrowd": true,
+  "max_payout": 15000,
+  "name": "Bitso Managed Bug Bounty Engagement",
+  "safe_harbor": "full",
+  "targets": {
+   "in_scope": [
+    {
+     "ipAddress": "",
+     "name": "bitso.com",
+     "target": "https://bitso.com",
+     "type": "website",
+     "uri": "https://bitso.com"
+    },
+    {
+     "ipAddress": "",
+     "name": "https://nvio.mx/",
+     "target": "https://nvio.mx/",
+     "type": "website",
+     "uri": "https://nvio.mx/"
+    },
+    {
+     "ipAddress": "",
+     "name": "https://nvio.ar/",
+     "target": "https://nvio.ar/",
+     "type": "website",
+     "uri": "https://nvio.ar/"
+    },
+    {
+     "ipAddress": "",
+     "name": "Mobile App Bitso Wallet iOS",
+     "target": "https://apps.apple.com/us/app/bitso-buy-bitcoin-easily/id1292836438",
+     "type": "ios",
+     "uri": "https://apps.apple.com/us/app/bitso-buy-bitcoin-easily/id1292836438"
+    },
+    {
+     "ipAddress": "",
+     "name": "Mobile App Bitso Alpha iOS",
+     "target": "https://apps.apple.com/us/app/bitso-alpha-crypto-trade-pro/id1539469172",
+     "type": "ios",
+     "uri": "https://apps.apple.com/us/app/bitso-alpha-crypto-trade-pro/id1539469172"
+    },
+    {
+     "ipAddress": "",
+     "name": "Mobile App Bitso Wallet Android",
+     "target": "https://play.google.com/store/apps/details?id=com.bitso.wallet&pcampaignid=web_share",
+     "type": "android",
+     "uri": "https://play.google.com/store/apps/details?id=com.bitso.wallet&pcampaignid=web_share"
+    }
+   ],
+   "out_of_scope": [
+    {
+     "ipAddress": "",
+     "name": "help.bitso.com",
+     "target": "help.bitso.com",
+     "type": "website",
+     "uri": ""
+    },
+    {
+     "ipAddress": "",
+     "name": "status.bitso.com\t",
+     "target": "status.bitso.com\t",
+     "type": "website",
+     "uri": ""
+    },
+    {
+     "ipAddress": "",
+     "name": "dev.bitso.com\t",
+     "target": "dev.bitso.com\t",
+     "type": "website",
+     "uri": ""
+    },
+    {
+     "ipAddress": "",
+     "name": "blog.bitso.com",
+     "target": "blog.bitso.com",
+     "type": "website",
+     "uri": ""
+    },
+    {
+     "ipAddress": "",
+     "name": "stage.bitso.com",
+     "target": "stage.bitso.com",
+     "type": "website",
+     "uri": ""
+    },
+    {
+     "ipAddress": "",
+     "name": "landing.bitso.com\t",
+     "target": "landing.bitso.com\t",
+     "type": "website",
+     "uri": ""
+    }
+   ]
+  },
+  "url": "https://bugcrowd.com/engagements/bitso-mbb-og"
+ },
+ {
+  "allows_disclosure": false,
+  "managed_by_bugcrowd": true,
+  "max_payout": 8000,
+  "name": "Vinted Bug Bounty",
+  "safe_harbor": "full",
+  "targets": {
+   "in_scope": [
+    {
+     "ipAddress": "",
+     "name": "www.vinted.com",
+     "target": "https://www.vinted.com",
+     "type": "website",
+     "uri": "https://www.vinted.com"
+    },
+    {
+     "ipAddress": "",
+     "name": "www.vinted.net",
+     "target": "https://www.vinted.net",
+     "type": "website",
+     "uri": "https://www.vinted.net"
+    },
+    {
+     "ipAddress": "",
+     "name": "www.vintedgo.com",
+     "target": "https://www.vintedgo.com",
+     "type": "website",
+     "uri": "https://www.vintedgo.com"
+    },
+    {
+     "ipAddress": "",
+     "name": "Vinted iOS application",
+     "target": "https://apps.apple.com/us/app/vinted-pre-loved-marketplace/id632064380",
+     "type": "ios",
+     "uri": "https://apps.apple.com/us/app/vinted-pre-loved-marketplace/id632064380"
+    },
+    {
+     "ipAddress": "",
+     "name": "Vinted Android application",
+     "target": "https://play.google.com/store/apps/details?id=fr.vinted",
+     "type": "android",
+     "uri": "https://play.google.com/store/apps/details?id=fr.vinted"
+    },
+    {
+     "ipAddress": "",
+     "name": "Vinted Go Sandbox",
+     "target": "https://sandbox.vintedgo.com",
+     "type": "website",
+     "uri": "https://sandbox.vintedgo.com"
+    }
+   ],
+   "out_of_scope": []
+  },
+  "url": "https://bugcrowd.com/engagements/vinted-uab-mbb"
+ },
+ {
+  "allows_disclosure": true,
+  "managed_by_bugcrowd": true,
+  "max_payout": 3000,
+  "name": "Web.com Bug Bounty",
+  "safe_harbor": "full",
+  "targets": {
+   "in_scope": [
+    {
+     "ipAddress": "",
+     "name": "app.web.com",
+     "target": "https://app.web.com",
+     "type": "website",
+     "uri": "https://app.web.com"
+    },
+    {
+     "ipAddress": null,
+     "name": "www.networksolutions.com",
+     "target": "https://www.networksolutions.com",
+     "type": "website",
+     "uri": "https://www.networksolutions.com"
+    },
+    {
+     "ipAddress": "",
+     "name": "https://www.bluehost.com/",
+     "target": "https://www.bluehost.com/",
+     "type": "website",
+     "uri": "https://www.bluehost.com/"
+    },
+    {
+     "ipAddress": "",
+     "name": "https://www.hostgator.com/",
+     "target": "https://www.hostgator.com/",
+     "type": "website",
+     "uri": "https://www.hostgator.com/"
+    }
+   ],
+   "out_of_scope": [
+    {
+     "ipAddress": null,
+     "name": "*.web.com",
+     "target": "https://*.web.com",
+     "type": "website",
+     "uri": "https://*.web.com"
+    },
+    {
+     "ipAddress": null,
+     "name": "*.register.com",
+     "target": "https://*.register.com",
+     "type": "website",
+     "uri": "https://*.register.com"
+    },
+    {
+     "ipAddress": null,
+     "name": "*.networksolutions.com",
+     "target": "https://*.networksolutions.com",
+     "type": "website",
+     "uri": "https://*.networksolutions.com"
+    },
+    {
+     "ipAddress": "",
+     "name": " https://app.gator.com/",
+     "target": " https://app.gator.com/",
+     "type": "website",
+     "uri": ""
+    },
+    {
+     "ipAddress": null,
+     "name": "*.bluehost.com",
+     "target": "*.bluehost.com",
+     "type": "website",
+     "uri": ""
+    },
+    {
+     "ipAddress": "",
+     "name": "*.hostgator.com",
+     "target": "https://*.hostgator.com",
+     "type": "website",
+     "uri": "https://*.hostgator.com"
+    }
+   ]
+  },
+  "url": "https://bugcrowd.com/engagements/webdotcom"
+ }
+]

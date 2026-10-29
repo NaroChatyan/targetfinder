@@ -1,0 +1,260 @@
+{
+ "account_access": "If you require a user account, please feel free to create it yourself. We kindly ask that you use your YesWeHack email aliases to make it identifiable. \n\nNote: Please do <b>NOT</b> mass create accounts to perform your testing and make an effort to limit yourself to the number of aliases you have on the platform.\n\nIf you want to test the order functionality, please limit yourselves to a small number of orders and <b>make sure to cancel</b> those in a short delay after your test.",
+ "account_access_html": "<p>If you require a user account, please feel free to create it yourself. We kindly ask that you use your YesWeHack email aliases to make it identifiable. </p>\n<p>Note: Please do <b>NOT</b> mass create accounts to perform your testing and make an effort to limit yourself to the number of aliases you have on the platform.</p>\n<p>If you want to test the order functionality, please limit yourselves to a small number of orders and <b>make sure to cancel</b> those in a short delay after your test.</p>",
+ "archived": false,
+ "attachments": null,
+ "banner": {
+  "mime_type": "image/png",
+  "name": "ab7cea0e-bbc1-4b8e-99c1-5054403089e8",
+  "original_name": "New Project.png",
+  "size": 196501,
+  "url": "https://cdn-yeswehack.com/program/banner/ab7cea0e-bbc1-4b8e-99c1-5054403089e8"
+ },
+ "bounty": true,
+ "bounty_reward_max": 2500,
+ "bounty_reward_min": 50,
+ "credit_balance": null,
+ "credit_balance_projected": null,
+ "demo": false,
+ "disable_message": null,
+ "disabled": false,
+ "disclose_bounty_average_reward": null,
+ "disclose_bounty_max_reward": null,
+ "disclose_bounty_min_reward": null,
+ "event": null,
+ "gift": false,
+ "hacktivity": false,
+ "hall_of_fame": true,
+ "has_history": true,
+ "has_pending_version": null,
+ "hunter_message_enabled": null,
+ "id": null,
+ "last_program_version": null,
+ "last_update_at": "2026-10-28T09:42:59+01:00",
+ "leakage_rule_enabled": true,
+ "leakage_rule_grid_in_scope": {
+  "fully_in_scope": true,
+  "out_of_scope": false,
+  "partially_in_scope": true
+ },
+ "leakage_rule_grid_out_of_scope": {
+  "fully_in_scope": true,
+  "out_of_scope": false,
+  "partially_in_scope": false
+ },
+ "max_credential_pool_number": null,
+ "non_qualifying_vulnerability": [
+  "Broken Link/ Social Media Hijacking",
+  "Tabnabbing",
+  "Missing cookie flags",
+  "Content/ Text injection",
+  "Clickjacking/ UI redressing",
+  "Denial of service (DOS) attacks",
+  "Recently disclosed CVEs (less than 30 days since patch release)",
+  "CVEs without exploitable vulnerabilities and PoC",
+  "Open ports or services without exploitable vulnerabilities and PoC",
+  "Social engineering of staff or contractors",
+  "Presence of autocomplete attribute on web forms",
+  "Vulnerabilities affecting outdated browsers or platforms",
+  "Self-XSS or XSS that cannot used to impact other users",
+  "Any hypothetical flaw or best practice without exploitable vulnerabilities and PoC",
+  "SSL/ TLS issues (e.g. expired certificates, best practices)",
+  "Unexploitable vulnerabilities (e.g. Self-XSS, XSS or Open-Redirect through Http headers...)",
+  "Reports with attack scenarios requiring MITM or physical access to victim's device",
+  "Missing security-related HTTP headers which do not lead directly to an exploitable vulnerability and PoC",
+  "Low Severity Cross-Site Request Forgery (CSRF) (e.g. Unauthenticated/ Logout/ Login / Product cart updates...)",
+  "Invalid or missing email security records (e.g. SPF, DKIM, DMARC)",
+  "Session management issues (eg. lack of expiration, no logout on password change, concurrent sessions)",
+  "Disclosure of information without exploitable vulnerabilities and PoC (e.g. stack traces, path disclosure, directory listings, software versions, IP disclosure, 3rd party secrets, EXIF Metadata, Origin IP)",
+  "CSV injection",
+  "Malicious file upload (e.g. EICAR files,EXE)",
+  "HTTP Strict Transport Security Header (HSTS)",
+  "Subdomain takeover without a full exploitable vulnerability and PoC or not applicable to the scope",
+  "Blind SSRF without exploitable vulnerabilities and PoC (e.g. DNS & HTTP pingback, Wordpress XMLRPC)",
+  "Lack or bypass of rate-limiting, brute-forcing or captcha issues",
+  "User enumeration (e.g. email, alias, GUID, phone number, common CMS endpoints)",
+  "Weak password policies (e.g. length, complexity, reuse)",
+  "Ability to spam users (email/SMS/ direct messages flooding)",
+  "Disclosed or misconfigured public API keys (e.g. Google Maps, Firebase, analytics tools...)",
+  "Password reset token sent via HTTP referer to external services (e.g. analytics / ads platforms)",
+  "Stolen secrets, credentials or information gathered from a third-party asset that we have no control over",
+  "Exposed secrets, credentials or information on an asset under our control that are not applicable to the program's scope",
+  "Pre-account takeover (e.g. account creation via oAuth)",
+  "GraphQL Introspection is enabled"
+ ],
+ "out_of_scope": [
+  "Out-Of-Scope are also other applications hosted under the www.otto.de domain but have a different path, that is not part of our core online shop itself (you will notice, since the design of the page is completely different)",
+  "Those include but are not limited to (if unsure, contact us before executing the tests):",
+  "https://www.otto.de/reblog"
+ ],
+ "pending_hunter_suggestions_count": 0,
+ "pid": null,
+ "program_metrics": {
+  "active_hunters_count": null,
+  "computed_at": "2026-10-29T15:07:23+01:00",
+  "hunter_members_count": null,
+  "report_count": null,
+  "reports_accepted_count": null,
+  "reports_accepted_high_critical_count": null,
+  "reports_assessed_count": null,
+  "reports_assessed_high_critical_count": null,
+  "reports_closed_count": null,
+  "reports_in_progress_count": null,
+  "reports_in_progress_high_critical_count": null,
+  "reports_resolved_count": null,
+  "rewards_total_amount": null,
+  "total_agentic_campaigns_count": null
+ },
+ "public": true,
+ "qualifying_vulnerability": [
+  "SQL Injection (SQLi)",
+  "Cross-Site Scripting (XSS)",
+  "Remote Code Execution (RCE)",
+  "Insecure Direct Object Reference (IDOR)",
+  "Horizontal and vertical privilege escalation",
+  "Authentication bypass & broken authentication",
+  "Business Logic Errors vulnerability with real security impact",
+  "Local files access and manipulation (LFI, RFI, XXE, SSRF, XSPA)",
+  "Cross-Origin Resource Sharing (CORS) with real security impact",
+  "Cross-site Request Forgery (CSRF) with real security impact",
+  "Open Redirect",
+  "Exposed secrets, credentials or sensitive information on an asset under our control and affecting at least one of our scopes"
+ ],
+ "report_collaboration_active": true,
+ "report_count_per_scope": true,
+ "report_import_line_max": null,
+ "report_import_nb_max": null,
+ "report_submission_cost": 2,
+ "reports_count": 915,
+ "reports_imported_count": null,
+ "restricted_ips": null,
+ "reward_grid_critical": {
+  "bounty_critical": null,
+  "bounty_high": null,
+  "bounty_low": null,
+  "bounty_medium": null
+ },
+ "reward_grid_default": {
+  "bounty_critical": 2000,
+  "bounty_high": 1000,
+  "bounty_low": 250,
+  "bounty_medium": 500
+ },
+ "reward_grid_high": {
+  "bounty_critical": null,
+  "bounty_high": null,
+  "bounty_low": null,
+  "bounty_medium": null
+ },
+ "reward_grid_low": {
+  "bounty_critical": 2000,
+  "bounty_high": 1000,
+  "bounty_low": 250,
+  "bounty_medium": 500
+ },
+ "reward_grid_medium": {
+  "bounty_critical": 2500,
+  "bounty_high": 1000,
+  "bounty_low": 250,
+  "bounty_medium": 500
+ },
+ "reward_grid_very_low": {
+  "bounty_critical": null,
+  "bounty_high": null,
+  "bounty_low": null,
+  "bounty_medium": null
+ },
+ "rights": [
+  "view"
+ ],
+ "scopes": [
+  {
+   "asset_value": "MEDIUM",
+   "report_count": null,
+   "scope": "https://www.otto.de",
+   "scope_type": "web-application",
+   "scope_type_name": "Web application"
+  },
+  {
+   "asset_value": "MEDIUM",
+   "report_count": null,
+   "scope": "https://www.otto.de/jobs",
+   "scope_type": "web-application",
+   "scope_type_name": "Web application"
+  },
+  {
+   "asset_value": "MEDIUM",
+   "report_count": null,
+   "scope": "https://play.google.com/store/apps/details?id=de.cellular.ottohybrid&hl=de",
+   "scope_type": "mobile-application-android",
+   "scope_type_name": "Mobile application Android"
+  },
+  {
+   "asset_value": "MEDIUM",
+   "report_count": null,
+   "scope": "https://apps.apple.com/de/app/otto-shopping-m%C3%B6bel/id404844644",
+   "scope_type": "mobile-application-ios",
+   "scope_type_name": "Mobile application IOS"
+  },
+  {
+   "asset_value": "LOW",
+   "report_count": null,
+   "scope": "https://www.lascana.de/",
+   "scope_type": "web-application",
+   "scope_type_name": "Web application"
+  },
+  {
+   "asset_value": "LOW",
+   "report_count": null,
+   "scope": "https://www.teleoptiprd.otto.de",
+   "scope_type": "web-application",
+   "scope_type_name": "Web application"
+  }
+ ],
+ "scopes_count": 10,
+ "secured": false,
+ "send_hunter_message_validation_required": null,
+ "sla_enabled": null,
+ "sla_grid": null,
+ "slug": "otto-de-bug-bounty",
+ "stats": {
+  "average_first_time_response": 1,
+  "average_reward": 45114,
+  "max_reward": 300000,
+  "total_reports": 915,
+  "total_reports_current_month": 51,
+  "total_reports_last24_hours": 33,
+  "total_reports_last7_days": 35
+ },
+ "status": "V",
+ "supported_languages": [
+  "GB"
+ ],
+ "systemic_issue_rule_enabled": true,
+ "systemic_issue_rule_grid": {
+  "level1": 100,
+  "level2": 100,
+  "level3": 75,
+  "level4": 50,
+  "level5": 25,
+  "level6": 0
+ },
+ "tags": null,
+ "thumbnail": {
+  "mime_type": "image/png",
+  "name": "c2eb0a8e-ef1f-4638-b25d-f44222a1823a",
+  "original_name": "logo(1).png",
+  "size": 9348,
+  "url": "https://cdn-yeswehack.com/program/thumbnail/c2eb0a8e-ef1f-4638-b25d-f44222a1823a"
+ },
+ "title": "OTTO.DE Bug Bounty",
+ "triaged": null,
+ "type": "bug-bounty",
+ "user_agent": "Bug-Bounty-Hunter-#YesWeHackUserName#",
+ "vdp": false,
+ "videos_attachments_enabled": true,
+ "vpn_active": false,
+ "vpn_ips": null,
+ "vpn_outbound_ips": null,
+ "ywh_triager_user_agent": null
+}

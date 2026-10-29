@@ -1,0 +1,158 @@
+[
+ {
+  "company_handle": "aswatson",
+  "confidentiality_level": "public",
+  "handle": "kruidvat",
+  "id": "d108eca8-374c-4e6f-a996-4af69c7bd079",
+  "max_bounty": {
+   "currency": "USD",
+   "value": 8500
+  },
+  "min_bounty": {
+   "currency": "USD",
+   "value": 10
+  },
+  "name": "Kruidvat",
+  "status": "open",
+  "tacRequired": false,
+  "targets": {
+   "in_scope": [
+    {
+     "description": "This is Kruidvat NL, our Dutch online Pharmacy.\nAPI spec: https://www.kruidvat.nl/api/v2/api-docs",
+     "endpoint": "www.kruidvat.nl",
+     "impact": "Tier 1",
+     "type": "url"
+    },
+    {
+     "description": "This is Kruidvat BE, our Belgian online Pharmacy.\nAPI spec: https://www.kruidvat.be/api/v2/api-docs",
+     "endpoint": "www.kruidvat.be",
+     "impact": "Tier 1",
+     "type": "url"
+    },
+    {
+     "description": "This is our Kruidvat mobile app for Belgium.\nApp Link: https://apps.apple.com/be/app/kruidvat/id1151434781",
+     "endpoint": "Kruidvat BE iOS",
+     "impact": "Tier 1",
+     "type": "ios"
+    },
+    {
+     "description": "This is our Kruidvat mobile app for The Netherlands.\nApp Link: https://itunes.apple.com/nl/app/kruidvat-mobiele-app/id531631058",
+     "endpoint": "Kruidvat NL iOS",
+     "impact": "Tier 1",
+     "type": "ios"
+    },
+    {
+     "description": "This is our Kruidvat mobile app for Belgium.\nApp Link: https://play.google.com/store/apps/details?id=nl.kruidvat.voordeelkaart",
+     "endpoint": "Kruidvat BE Android",
+     "impact": "Tier 1",
+     "type": "android"
+    },
+    {
+     "description": "TThis is our Kruidvat mobile app for The Netherlands.\nApp Link: https://play.google.com/store/apps/details?id=be.kruidvat.voordeelkaart",
+     "endpoint": "Kruidvat NL Android",
+     "impact": "Tier 1",
+     "type": "android"
+    }
+   ],
+   "out_of_scope": []
+  },
+  "twoFactorRequired": false,
+  "url": "https://www.intigriti.com/programs/aswatson/kruidvat/detail"
+ },
+ {
+  "company_handle": "universitatsspitalzurich",
+  "confidentiality_level": "public",
+  "handle": "usz-vdp",
+  "id": "a5158346-5add-4916-bd31-d8a5fe1e805f",
+  "max_bounty": {
+   "currency": "EUR",
+   "value": 0
+  },
+  "min_bounty": {
+   "currency": "EUR",
+   "value": 0
+  },
+  "name": "Universitätsspital Zürich VDP",
+  "status": "open",
+  "tacRequired": false,
+  "targets": {
+   "in_scope": [
+    {
+     "description": "forwarding to usz.ch",
+     "endpoint": "*.unispital.ch ",
+     "impact": "No Bounty",
+     "type": "wildcard"
+    },
+    {
+     "description": "this is our Main Website.\nYou are welcome to check it all around for security Issues.",
+     "endpoint": "*.usz.ch ",
+     "impact": "No Bounty",
+     "type": "wildcard"
+    }
+   ],
+   "out_of_scope": []
+  },
+  "twoFactorRequired": false,
+  "url": "https://www.intigriti.com/programs/universitatsspitalzurich/usz-vdp/detail"
+ },
+ {
+  "company_handle": "aswatson",
+  "confidentiality_level": "public",
+  "handle": "watsons",
+  "id": "8a9c91c0-dd4f-4ed3-bb65-3c6b68e76b24",
+  "max_bounty": {
+   "currency": "USD",
+   "value": 8500
+  },
+  "min_bounty": {
+   "currency": "USD",
+   "value": 10
+  },
+  "name": "Watsons",
+  "status": "open",
+  "tacRequired": false,
+  "targets": {
+   "in_scope": [
+    {
+     "description": "This is our online retail platform for health and beauty products in Hong Kong.",
+     "endpoint": "www.watsons.com.hk",
+     "impact": "Tier 1",
+     "type": "url"
+    },
+    {
+     "description": "This is the API server of the Watsons Hong Kong mobile app",
+     "endpoint": "www10.watsons.com.hk",
+     "impact": "Tier 1",
+     "type": "url"
+    },
+    {
+     "description": "This is our Watsons Hong Kong Mobile (Android) app. \nApp Link: https://play.google.com/store/apps/details?id=com.ndn.android.watsons",
+     "endpoint": "Watsons Hong Kong Android",
+     "impact": "Tier 1",
+     "type": "android"
+    },
+    {
+     "description": "This is our Watsons Hong Kong (iOS) app.\nApp link: https://apps.apple.com/hk/app/%E5%B1%88%E8%87%A3%E6%B0%8F%E9%A6%99%E6%B8%AF/id479512803",
+     "endpoint": "Watsons Hong Kong iOS",
+     "impact": "Tier 1",
+     "type": "ios"
+    },
+    {
+     "description": "This is the API server for the www.watsons.com.hk website",
+     "endpoint": "api.watsons.com.hk",
+     "impact": "Tier 1",
+     "type": "url"
+    },
+    {
+     "description": "This subdomain is used to store static content for the www.watsons.com.hk e-commerce website.",
+     "endpoint": "medias.watsons.com.hk",
+     "impact": null,
+     "type": "url"
+    }
+   ],
+   "out_of_scope": []
+  },
+  "twoFactorRequired": false,
+  "url": "https://www.intigriti.com/programs/aswatson/watsons/detail"
+ }
+]

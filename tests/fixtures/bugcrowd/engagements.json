@@ -1,0 +1,101 @@
+{
+ "engagements": [
+  {
+   "accessStatus": "open",
+   "backgroundColor": "#fff",
+   "badgeVariant": null,
+   "briefUrl": "/engagements/bitso-mbb-og",
+   "endsAt": null,
+   "industryName": "Finance",
+   "isBanned": false,
+   "isDemo": false,
+   "isFollowing": false,
+   "isPrivate": false,
+   "logoUrl": "https://logos.bugcrowdusercontent.com/logos/ce49/1668/78d6da33/7e0b508eecb365dabe2dd93e58906b2b_Avatar-Square-X.png",
+   "name": "Bitso Managed Bug Bounty Engagement",
+   "paymentAllocationUrl": null,
+   "productEngagementType": {
+    "iconVariant": "bug-bounty",
+    "label": "Bug Bounty"
+   },
+   "rewardSummary": {
+    "compensationHint": null,
+    "compensationSummary": null,
+    "hint": null,
+    "maxReward": "$15,000",
+    "minReward": "$100",
+    "summary": "$100 - $15,000"
+   },
+   "scopeRank": 2,
+   "serviceLevel": "Platform",
+   "subscriptionUrl": "/bitso-mbb-og/engagement_subscribers",
+   "tagline": "Bitso is Latin America’s leading Financial Services company powered by crypto."
+  },
+  {
+   "accessStatus": "open",
+   "backgroundColor": "#fff",
+   "badgeVariant": null,
+   "briefUrl": "/engagements/vinted-uab-mbb",
+   "endsAt": null,
+   "industryName": "eCommerce",
+   "isBanned": false,
+   "isDemo": false,
+   "isFollowing": false,
+   "isPrivate": false,
+   "logoUrl": "https://logos.bugcrowdusercontent.com/logos/0753/e399/312b36be/befc2765097855046d54e6f38c26d778_vinted_logo.jpeg",
+   "name": "Vinted Bug Bounty",
+   "paymentAllocationUrl": null,
+   "productEngagementType": {
+    "iconVariant": "bug-bounty",
+    "label": "Bug Bounty"
+   },
+   "rewardSummary": {
+    "compensationHint": null,
+    "compensationSummary": null,
+    "hint": null,
+    "maxReward": "$8,000",
+    "minReward": "$75",
+    "summary": "$75 - $8,000"
+   },
+   "scopeRank": 3,
+   "serviceLevel": "Platform",
+   "subscriptionUrl": "/vinted-uab-mbb/engagement_subscribers",
+   "tagline": "Vinted is a leading peer-to-peer re-commerce platform dedicated to making second-hand fashion and lifestyle items the first choice across Europe."
+  },
+  {
+   "accessStatus": "open",
+   "backgroundColor": "#2D72B4",
+   "badgeVariant": null,
+   "briefUrl": "/engagements/webdotcom",
+   "endsAt": null,
+   "industryName": "Technology",
+   "isBanned": false,
+   "isDemo": false,
+   "isFollowing": false,
+   "isPrivate": false,
+   "logoUrl": "https://logos.bugcrowdusercontent.com/logos/11c1/3c18/ae692a84/becbbdbeae7c1a3b8507143c2d373e2d_webdotcom_gimp.jpg",
+   "name": "Web.com Bug Bounty",
+   "paymentAllocationUrl": null,
+   "productEngagementType": {
+    "iconVariant": "bug-bounty",
+    "label": "Bug Bounty"
+   },
+   "rewardSummary": {
+    "compensationHint": "max reward",
+    "compensationSummary": "Up to $5,000",
+    "hint": "Up to $5,000",
+    "maxReward": "$3,000",
+    "minReward": "Points",
+    "summary": "Points - $3,000"
+   },
+   "scopeRank": 1,
+   "serviceLevel": "Platform",
+   "subscriptionUrl": "/webdotcom/engagement_subscribers",
+   "tagline": "You say it. We build it. It's as easy as Web.com! "
+  }
+ ],
+ "paginationMeta": {
+  "limit": 25,
+  "totalCount": 3
+ }
+}

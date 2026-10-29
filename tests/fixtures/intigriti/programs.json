@@ -1,0 +1,80 @@
+[
+ {
+  "companyHandle": "universitatsspitalzurich",
+  "companyName": "Universitätsspital Zürich",
+  "companySustainable": false,
+  "confidentialityLevel": 4,
+  "createdAt": 1675176439,
+  "description": "VULNERABILITY DISCLOSURE PROGRAM (VDP)\nAbove all else, University Hospital Zurich is committed to the care and improvement of human life. Part of that mission is to protect our patients, people, systems, and facilities. We want encourage security researchers to feel comfortable reporting vulnerabilities they’ve discovered to us in good faith. \n",
+  "handle": "usz-vdp",
+  "industry": "hospitals_and_healthcare",
+  "lastSubmissionAt": 1791274395,
+  "lastUpdatedAt": 1743596998,
+  "logoId": "public_bucket_534a1405-37e7-4d49-affd-bf2c382b6eb3-380dee97-6e63-45cd-ac30-b893f2d04c5b",
+  "maxBounty": {
+   "currency": "EUR",
+   "value": 0.0
+  },
+  "minBounty": {
+   "currency": "EUR",
+   "value": 0.0
+  },
+  "name": "Universitätsspital Zürich VDP",
+  "programId": "a5158346-5add-4916-bd31-d8a5fe1e805f",
+  "status": 3,
+  "tacRequired": false,
+  "twoFactorRequired": false
+ },
+ {
+  "companyHandle": "aswatson",
+  "companyName": "AS Watson",
+  "companySustainable": false,
+  "confidentialityLevel": 4,
+  "createdAt": 1768489886,
+  "description": "The AS Watson Bug Bounty Program\n\nAS Watson is a diverse family of over 130,000 people, 17,000 stores shared by 12 retail brands in 31 markets. Established in 1841, AS Watson Group is one of the world's longest-standing and most recognised retail companies with roots in Asia. For 185 years, we’ve been united by an unchanging purpose - To put a Smile on our customers’ faces today and tomorrow. It is always our pride and joy to bring a Smile to everyone we come in touch with.\n\nAS Watson Group looks forward to working with the security community to discover vulnerabilities in order to keep our businesses and customers safe.\n\nPlease note that some of our websites run on a similar codebase (Hybris/SAP CMS). This means that issues that are found on one asset, might also apply to another asset (also across programs). These findings will be regarded and treated as a single issue.\n\nOur websites are always under development and have new releases on a regular basis. These new releases sometimes do introduce functionalities (and potentially new vulnerabilities). We encourage you to keep testing our assets to uncover these.\n\nThis program focuses specifically on the Kruidvat  and Trekpleister brands from AS Watson. These brands are operating in The Netherlands and Belgium.",
+  "handle": "kruidvat",
+  "industry": "retail",
+  "lastSubmissionAt": 1793228238,
+  "lastUpdatedAt": 1783415309,
+  "logoId": "public_bucket_21195292-37fd-4f12-ad32-fcc2a485a496-269a2e69-c03a-4442-bb1a-2ad878fcf097",
+  "maxBounty": {
+   "currency": "USD",
+   "value": 8500.0
+  },
+  "minBounty": {
+   "currency": "USD",
+   "value": 10.0
+  },
+  "name": "Kruidvat",
+  "programId": "d108eca8-374c-4e6f-a996-4af69c7bd079",
+  "status": 3,
+  "tacRequired": false,
+  "twoFactorRequired": false
+ },
+ {
+  "companyHandle": "aswatson",
+  "companyName": "AS Watson",
+  "companySustainable": false,
+  "confidentialityLevel": 4,
+  "createdAt": 1768486324,
+  "description": "The AS Watson Bug Bounty Program\n\nAS Watson is a diverse family of over 130,000 people, 17,000 stores shared by 12 retail brands in 31 markets. Established in 1841, AS Watson Group is one of the world's longest-standing and most recognised retail companies with roots in Asia. For 185 years, we’ve been united by an unchanging purpose - To put a Smile on our customers’ faces today and tomorrow. It is always our pride and joy to bring a Smile to everyone we come in touch with.\n\nAS Watson Group looks forward to working with the security community to discover vulnerabilities in order to keep our businesses and customers safe.\n\nPlease note that some of our websites run on a similar codebase (Hybris/SAP CMS). This means that issues that are found on one asset, might also apply to another asset (also across programs). These findings will be regarded and treated as a single issue.\n\nOur websites are always under development and have new releases on a regular basis. These new releases sometimes do introduce functionalities (and potentially new vulnerabilities). We encourage you to keep testing our assets to uncover these.\n\nThis bug bounty program focuses specifically on the Watsons brands from AS Watson. This brand has online and offline stores in many different countries in Asia and Europe. In addition, the PNS Hong Kong, Fortress Hong Kong, LookAtMe Philippines, Drogas and the Moneyback Hong Kong Loyalty program are included in the scope for this bug bounty program.",
+  "handle": "watsons",
+  "industry": "retail",
+  "lastSubmissionAt": 1793282583,
+  "lastUpdatedAt": 1789110008,
+  "logoId": "public_bucket_ee410897-c501-4309-927d-03b80ea2ea03-b57324be-243c-4c06-87c7-5843fb9100d8",
+  "maxBounty": {
+   "currency": "USD",
+   "value": 8500.0
+  },
+  "minBounty": {
+   "currency": "USD",
+   "value": 10.0
+  },
+  "name": "Watsons",
+  "programId": "8a9c91c0-dd4f-4ed3-bb65-3c6b68e76b24",
+  "status": 3,
+  "tacRequired": false,
+  "twoFactorRequired": false
+ }
+]

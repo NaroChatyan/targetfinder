@@ -1,0 +1,86 @@
+{
+ "data": {
+  "team": {
+   "structured_scopes": {
+    "edges": [
+     {
+      "node": {
+       "asset_identifier": "xpi.com.br",
+       "asset_type": "URL",
+       "created_at": "2026-07-02T20:56:32.381Z",
+       "eligible_for_bounty": false,
+       "eligible_for_submission": true,
+       "instruction": null,
+       "max_severity": "critical",
+       "updated_at": "2026-07-13T13:23:42.494Z"
+      }
+     },
+     {
+      "node": {
+       "asset_identifier": "rico.com.vc",
+       "asset_type": "URL",
+       "created_at": "2026-07-02T20:57:15.095Z",
+       "eligible_for_bounty": false,
+       "eligible_for_submission": true,
+       "instruction": null,
+       "max_severity": "critical",
+       "updated_at": "2026-07-13T13:27:13.254Z"
+      }
+     },
+     {
+      "node": {
+       "asset_identifier": "xpempresas.com.br",
+       "asset_type": "URL",
+       "created_at": "2026-07-02T20:57:35.580Z",
+       "eligible_for_bounty": false,
+       "eligible_for_submission": true,
+       "instruction": null,
+       "max_severity": "critical",
+       "updated_at": "2026-07-13T13:26:58.372Z"
+      }
+     },
+     {
+      "node": {
+       "asset_identifier": "clear.com.br",
+       "asset_type": "URL",
+       "created_at": "2026-07-02T21:00:00.966Z",
+       "eligible_for_bounty": false,
+       "eligible_for_submission": true,
+       "instruction": null,
+       "max_severity": "critical",
+       "updated_at": "2026-07-13T14:36:59.925Z"
+      }
+     },
+     {
+      "node": {
+       "asset_identifier": "modalmais.com.br",
+       "asset_type": "URL",
+       "created_at": "2026-07-02T21:00:29.882Z",
+       "eligible_for_bounty": false,
+       "eligible_for_submission": true,
+       "instruction": null,
+       "max_severity": "critical",
+       "updated_at": "2026-07-13T13:27:45.504Z"
+      }
+     },
+     {
+      "node": {
+       "asset_identifier": "xpeducacao.com.br",
+       "asset_type": "URL",
+       "created_at": "2026-07-02T21:00:56.042Z",
+       "eligible_for_bounty": false,
+       "eligible_for_submission": true,
+       "instruction": "",
+       "max_severity": "critical",
+       "updated_at": "2026-07-02T21:00:56.042Z"
+      }
+     }
+    ],
+    "pageInfo": {
+     "endCursor": "MTQ",
+     "hasNextPage": false
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,439 @@
+{
+ "acceptedSubmissionsEnabled": true,
+ "announcementsCount": 4,
+ "badgeVariant": null,
+ "cancellationReason": null,
+ "collaborationEnabled": true,
+ "coordinatedDisclosure": true,
+ "createUserFeedbacksUrl": "/engagements/bitso-mbb-og/feedbacks",
+ "credentialsUrl": null,
+ "data": {
+  "brief": {
+   "additionalInformation": "",
+   "collaborationEnabled": true,
+   "description": "<p>Bitso is Latin America’s leading Financial Services company powered by crypto. With millions of clients, we are leading the financial revolution with borderless, secure, transparent, and accessible financial products. With the mission to unlock the power of borderless, secure, and easy-to-use financial products by making crypto useful, we are committed to empowering the region with universal access to the digital economy of the future and enabling a fairer monetary system.</p>\n\n<p>No technology is perfect and Bitso believes that working with skilled security researchers across the globe is crucial in identifying weaknesses in any technology. We are excited for you to participate as a security researcher to help us identify vulnerabilities in our assets. Good luck, and happy hunting!</p>\n\n<h2>Ratings/Rewards:</h2>\n\n<p><em>For the initial prioritization/rating of findings, this program will use the <a href=\"https://bugcrowd.com/vulnerability-rating-taxonomy\" rel=\"nofollow noreferrer\" target=\"_blank\">Bugcrowd Vulnerability Rating Taxonomy</a>. However, it is important to note that in some cases a vulnerability priority will be modified due to its likelihood or impact. In any instance where an issue is downgraded, a full, detailed explanation will be provided to the researcher - along with the opportunity to appeal, and make a case for a higher priority.</em></p>\n\n<p>Good luck, and happy hunting!</p>",
+   "id": "d524da96-6892-48fc-9447-cc9ba42a1fa0",
+   "industryTagId": "6bf30795-7930-4c2b-bb79-d2c4f15f7740",
+   "name": "Bitso Managed Bug Bounty Engagement",
+   "safeHarborStatus": {
+    "description": "This engagement is fully committed to providing safe harbor for good-faith security research.",
+    "label": "Safe harbor",
+    "status": "full"
+   },
+   "tagline": "Bitso is Latin America’s leading Financial Services company powered by crypto.",
+   "targetsOverview": "<p><em>Testing is only authorized on the targets listed as in scope. Any domain/property of Bitso not listed in the targets section is out of scope. This includes any/all subdomains not listed above. If you happen to identify a security vulnerability on a target that is not in scope, but it demonstrably belongs to Bitso, you can report it to <a href=\"https://bugcrowd-support.freshdesk.com/support/home\" rel=\"nofollow noreferrer\" target=\"_blank\">Bugcrowd Portal</a>. However, be aware that such reports will be ineligible for rewards or points-based compensation.</em></p>\n\n<hr>\n\n<h2>Focus Areas</h2>\n\n<p>We're particularly interested in reports covering:</p>\n\n<p><strong>Access control vulnerabilities</strong> — accessing data or functionality that belongs to another user or account (IDOR, broken object-level authorization, etc.).<br>\n<strong>Privilege escalation</strong> — vertical or horizontal, including moving from a retail account to admin or internal functionality.<br>\n<strong>Authentication weaknesses</strong> — 2FA bypass, session handling flaws, account takeover vectors, password reset flaws.<br>\n<strong>Business logic flaws in financial flows</strong> — anything that lets you manipulate balances, trades, deposits, withdrawals, or conversion rates in ways the platform shouldn't allow.<br>\n<strong>Race conditions</strong> — especially around transactions, transfers, and balance updates.<br>\n<strong>KYC/onboarding bypass</strong> — skipping or spoofing identity verification steps.<br>\n<strong>API vulnerabilities</strong> — broken authorization, excessive data exposure, or rate-limit issues with demonstrated impact on our public and mobile APIs.</p>\n\n<p>Findings that demonstrate direct impact on customer funds or personal data will be prioritized and rated accordingly.</p>\n\n<hr>\n\n<h2>Out-of-Scope Vulnerabilities</h2>\n\n<p>We can only reward findings on systems that Bitso actually owns and operates. The following issue types are out of scope for this program:</p>\n\n<p><strong>Supply chain attacks</strong> — compromised third-party dependencies, development tools, IDE extensions, packages, or vendors used by Bitso or its employees, including cases where an employee is targeted directly through one of these. Even if the end result exposes Bitso information, the root cause lives outside our environment and is not a vulnerability in our systems.<br>\n<strong>Social engineering</strong> — phishing, vishing, smishing, or similar attacks against employees or customers.<br>\n<strong>Physical attacks</strong> — against offices, data centers, or personnel.<br>\n<strong>DoS/DDoS and brute-forcing</strong> — see the Access/Traffic Identification section above.<br>\n<strong>Third-party services</strong> — issues in services we use but don't operate. Please report those to the vendor.<br>\n<strong>Best-practice findings with no demonstrated impact</strong> — missing headers, SPF/DKIM/DMARC records, version disclosure, self-XSS, and similar.<br>\n<strong>Scanner output</strong> — raw automated scanner results without a working proof of concept.</p>\n\n<p>You're still welcome to send these our way for awareness, and we appreciate the heads up — but they won't qualify for rewards or points-based compensation.</p>\n\n<h2>Credentials</h2>\n\n<p>Accounts on all publicly facing targets can be self-provisioned. Please sign up for an account using your @<a href=\"http://bugcrowdninja.com\" rel=\"nofollow noreferrer\" target=\"_blank\">bugcrowdninja.com</a> email address as they will be automatically approved and will allow for testing of all features without needing to make a payment. For more info regarding @bugcrowdninja email addresses, see <a href=\"https://docs.bugcrowd.com/researchers/participating-in-program/your-bugcrowdninja-email-address/\" rel=\"nofollow noreferrer\" target=\"_blank\">here</a>.</p>\n\n<h3>Access/Traffic Identification</h3>\n\n<p>Targets are accessible via the public internet. When accessing, please add the below request header. DDoS and Bruteforcing are highly discouraged and testing without the below header can lead to account blockage and IP ban since it will be considered a legitimate attack.</p>\n\n<table>\n<thead>\n<tr>\n<th>Identifier</th>\n<th>Header</th>\n<th>Example</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Username</td>\n<td>X-Bug-Bounty: Bugcrowd-&lt;Username&gt;</td>\n<td>X-Bug-Bounty: Bugcrowd-proresearcher</td>\n</tr>\n</tbody>\n</table>\n\n<hr>\n\n<h2>Cross-Domain Duplicate Policy</h2>\n\n<p>Please note that <code>bitso.com</code>, <code>nvio.mx</code>, and <code>nvio.ar</code> are considered a single logical entity for the purposes of this program.</p>\n\n<p>Vulnerabilities identified on these domains that originate from the same underlying code, configuration, or database will be treated as a <strong>single finding.</strong></p>\n\n<p>The first report received (<em>on any of these domains</em>) will be considered the original; subsequent reports on a sibling domain will be closed as <code>Duplicate</code>.</p>\n\n<p><em><strong>Note: Researchers are encouraged to note if a vulnerability affects multiple domains within a single report.</strong></em></p>\n\n<h2>N-Day Policy</h2>\n\n<ul>\n<li>When N-Day bugs are released to the public, we will consider these as in scope <em>after</em> 14 days have gone by\n\n<ul>\n<li>e.g: N-day released on 01/01/2025, we would consider it in-scope on 01/15/2025</li>\n</ul>\n</li>\n</ul>\n\n<hr>\n\n<h2>Safe Harbor</h2>\n\n<p><strong>When conducting vulnerability research according to this policy, we consider this research to be:</strong></p>\n\n<ul>\n<li>Authorized in accordance with the Computer Fraud and Abuse Act (CFAA) (and/or similar state laws), and we will not initiate or support legal action against you for accidental, good faith violations of this policy;</li>\n<li>Exempt from the Digital Millennium Copyright Act (DMCA), and we will not bring a claim against you for circumvention of technology controls;</li>\n<li>Exempt from restrictions in our Terms &amp; Conditions that would interfere with conducting security research, and we waive those restrictions on a limited basis for work done under this policy; and</li>\n<li>Lawful, helpful to the overall security of the Internet, and conducted in good faith.</li>\n<li>You are expected, as always, to comply with all applicable laws.</li>\n</ul>\n\n<p><em>If at any time you have concerns or are uncertain whether your security research is consistent with this policy, please inquire through the <a href=\"https://bugcrowd-support.freshdesk.com/support/tickets/new\" rel=\"nofollow noreferrer\" target=\"_blank\">Bugcrowd Support Portal</a> before going any further.</em></p>\n\n<hr>\n\n<h2>The Fine Print</h2>\n\n<p>You must comply with all applicable laws in connection with your participation in this program. You are also responsible for any applicable taxes associated with any reward you receive.</p>\n\n<p>Thank you for helping keep the crypto community safe!</p>"
+  },
+  "engagement": {
+   "bountyId": "a99b5d33-313c-4969-bd01-3612ecf5066b",
+   "code": "bitso-mbb-og",
+   "endsAt": null,
+   "id": "09a71606-59d0-4f36-8a10-ceccdfc2875c",
+   "startsAt": "2025-01-07T18:00:00Z",
+   "state": "in_progress"
+  },
+  "engagementConfiguration": {
+   "crowdSelectionStrategy": "none",
+   "participation": "open"
+  },
+  "resources": [],
+  "scope": [
+   {
+    "description": null,
+    "descriptionHtml": "<h4>Bitso.com - Bitso is a cryptocurrency platform that enables users to invest, trade, and make borderless payments using digital assets. With over 8 million users globally, it offers a range of services tailored to both individuals and businesses. Key Features: Cryptocurrency Trading, Earnings Program, Investment Tools, Bitso Card, Business Solutions.</h4>\n\n<h4>Bitso Mobile -</h4>\n\n<ul>\n<li>Currently the applications are being developed natively. Therefore they don&#39;t share codebase nor framework so all submissions will be considered unique for both apps on iOS and Android. </li>\n<li>Hackers are encouraged to use the applications version found in the App Stores.</li>\n</ul>\n\n<h4>Apps -</h4>\n\n<ul>\n<li>Bitso Wallet - The Bitso Wallet app allows users to manage their cryptocurrency investments, trade digital assets, and make payments directly from their mobile devices.</li>\n<li>Bitso Alpha - Bitso Alpha is a professional trading platform offered by Bitso, designed for users who require advanced tools and features for cryptocurrency trading.</li>\n</ul>",
+    "id": "5b981034-0f38-4b85-946b-4249ededc2c4",
+    "inScope": true,
+    "name": "In Scope",
+    "recentChangeFlags": null,
+    "rewardRange": {
+     "engagementMaxCents": null,
+     "id": "5fb97906-9fb6-4780-b664-65e7ac38abd7",
+     "p1MaxCents": 1500000,
+     "p1MinCents": 1100000,
+     "p2MaxCents": 700000,
+     "p2MinCents": 500000,
+     "p3MaxCents": 300000,
+     "p3MinCents": 150000,
+     "p4MaxCents": 100000,
+     "p4MinCents": 10000,
+     "p5MaxCents": null,
+     "p5MinCents": null
+    },
+    "rewardRangeData": {
+     "1": {
+      "max": 15000,
+      "min": 11000
+     },
+     "2": {
+      "max": 7000,
+      "min": 5000
+     },
+     "3": {
+      "max": 3000,
+      "min": 1500
+     },
+     "4": {
+      "max": 1000,
+      "min": 100
+     },
+     "5": {
+      "max": null,
+      "min": null
+     }
+    },
+    "sortOrder": 0,
+    "targets": [
+     {
+      "category": "website",
+      "description": null,
+      "engagementBriefTargetGroupTarget": {
+       "id": "dbe95202-88a4-4e4c-b7c2-e04ba63a313b",
+       "sortOrder": 0
+      },
+      "id": "8b70c686-1a96-4895-976f-37d938c028cf",
+      "ipAddress": "",
+      "name": "bitso.com",
+      "recentChangeFlags": null,
+      "sortOrder": 0,
+      "tags": [
+       {
+        "id": "16818e15-ac0f-4e76-999b-8b6a87db2837",
+        "name": "Docker",
+        "targetId": "8b70c686-1a96-4895-976f-37d938c028cf"
+       },
+       {
+        "id": "1892c58d-2dbd-4b0d-96ee-1d2322fd1711",
+        "name": "Java",
+        "targetId": "8b70c686-1a96-4895-976f-37d938c028cf"
+       },
+       {
+        "id": "33a7c027-8a7e-4564-8330-cb149ab4352e",
+        "name": "TypeScript",
+        "targetId": "8b70c686-1a96-4895-976f-37d938c028cf"
+       },
+       {
+        "id": "45e28558-ada7-4f38-b087-fb0e6ac31e0d",
+        "name": "AWS",
+        "targetId": "8b70c686-1a96-4895-976f-37d938c028cf"
+       },
+       {
+        "id": "bc744424-2ab8-48c8-b938-c6d6abcdf500",
+        "name": "Website Testing",
+        "targetId": "8b70c686-1a96-4895-976f-37d938c028cf"
+       },
+       {
+        "id": "e82bba17-848b-4f2b-a2a5-58d2a83530d4",
+        "name": "Kubernetes",
+        "targetId": "8b70c686-1a96-4895-976f-37d938c028cf"
+       }
+      ],
+      "uri": "https://bitso.com"
+     },
+     {
+      "category": "website",
+      "description": null,
+      "engagementBriefTargetGroupTarget": {
+       "id": "3223ec12-bd8f-494d-bb2c-8d21bf30c48d",
+       "sortOrder": 1
+      },
+      "id": "4728cd48-b5ca-44e5-8c8a-6f1bdbd05b5b",
+      "ipAddress": "",
+      "name": "https://nvio.mx/",
+      "recentChangeFlags": null,
+      "sortOrder": 1,
+      "tags": [
+       {
+        "id": "45e28558-ada7-4f38-b087-fb0e6ac31e0d",
+        "name": "AWS",
+        "targetId": "4728cd48-b5ca-44e5-8c8a-6f1bdbd05b5b"
+       },
+       {
+        "id": "9dded18a-fb38-4faa-b2ac-82845ca03735",
+        "name": "ReactJS",
+        "targetId": "4728cd48-b5ca-44e5-8c8a-6f1bdbd05b5b"
+       },
+       {
+        "id": "bc744424-2ab8-48c8-b938-c6d6abcdf500",
+        "name": "Website Testing",
+        "targetId": "4728cd48-b5ca-44e5-8c8a-6f1bdbd05b5b"
+       }
+      ],
+      "uri": "https://nvio.mx/"
+     },
+     {
+      "category": "website",
+      "description": null,
+      "engagementBriefTargetGroupTarget": {
+       "id": "820b3c57-66d7-4b92-9d8f-cbe2da997155",
+       "sortOrder": 2
+      },
+      "id": "9a86280c-6e64-4124-93e6-1be9ed67ef1b",
+      "ipAddress": "",
+      "name": "https://nvio.ar/",
+      "recentChangeFlags": null,
+      "sortOrder": 2,
+      "tags": [
+       {
+        "id": "45e28558-ada7-4f38-b087-fb0e6ac31e0d",
+        "name": "AWS",
+        "targetId": "9a86280c-6e64-4124-93e6-1be9ed67ef1b"
+       },
+       {
+        "id": "7cbdff60-9a91-41df-b802-486d21021b34",
+        "name": "ReactNative",
+        "targetId": "9a86280c-6e64-4124-93e6-1be9ed67ef1b"
+       },
+       {
+        "id": "9dd4899d-3a63-4126-8c83-c1fc1de50c25",
+        "name": "Amazon Cloudfront",
+        "targetId": "9a86280c-6e64-4124-93e6-1be9ed67ef1b"
+       },
+       {
+        "id": "bc744424-2ab8-48c8-b938-c6d6abcdf500",
+        "name": "Website Testing",
+        "targetId": "9a86280c-6e64-4124-93e6-1be9ed67ef1b"
+       }
+      ],
+      "uri": "https://nvio.ar/"
+     },
+     {
+      "category": "ios",
+      "description": null,
+      "engagementBriefTargetGroupTarget": {
+       "id": "1fe5be11-4af0-4fb1-afe8-ba507647027e",
+       "sortOrder": 3
+      },
+      "id": "3aaf0f1b-2c71-4daa-91fa-acd62c4a97d0",
+      "ipAddress": "",
+      "name": "Mobile App Bitso Wallet iOS",
+      "recentChangeFlags": null,
+      "sortOrder": 3,
+      "tags": [
+       {
+        "id": "a6a12b60-e857-44a3-9cc9-3aa9a21aa203",
+        "name": "Mobile Application Testing",
+        "targetId": "3aaf0f1b-2c71-4daa-91fa-acd62c4a97d0"
+       },
+       {
+        "id": "e251f4f0-1204-4c8a-9e12-dba8fdaadf48",
+        "name": "iOS",
+        "targetId": "3aaf0f1b-2c71-4daa-91fa-acd62c4a97d0"
+       }
+      ],
+      "uri": "https://apps.apple.com/us/app/bitso-buy-bitcoin-easily/id1292836438"
+     },
+     {
+      "category": "ios",
+      "description": null,
+      "engagementBriefTargetGroupTarget": {
+       "id": "4778d293-5cff-4d0b-9ce4-600ee2b152d9",
+       "sortOrder": 4
+      },
+      "id": "169e0253-9650-4c51-932e-03bb6d5987f4",
+      "ipAddress": "",
+      "name": "Mobile App Bitso Alpha iOS",
+      "recentChangeFlags": null,
+      "sortOrder": 4,
+      "tags": [
+       {
+        "id": "a6a12b60-e857-44a3-9cc9-3aa9a21aa203",
+        "name": "Mobile Application Testing",
+        "targetId": "169e0253-9650-4c51-932e-03bb6d5987f4"
+       },
+       {
+        "id": "e251f4f0-1204-4c8a-9e12-dba8fdaadf48",
+        "name": "iOS",
+        "targetId": "169e0253-9650-4c51-932e-03bb6d5987f4"
+       }
+      ],
+      "uri": "https://apps.apple.com/us/app/bitso-alpha-crypto-trade-pro/id1539469172"
+     },
+     {
+      "category": "android",
+      "description": null,
+      "engagementBriefTargetGroupTarget": {
+       "id": "80200f73-8048-4ba4-9b8b-c4d79b937802",
+       "sortOrder": 5
+      },
+      "id": "657e17e9-dd00-4e12-8ae0-5392fe551651",
+      "ipAddress": "",
+      "name": "Mobile App Bitso Wallet Android",
+      "recentChangeFlags": null,
+      "sortOrder": 5,
+      "tags": [
+       {
+        "id": "a6a12b60-e857-44a3-9cc9-3aa9a21aa203",
+        "name": "Mobile Application Testing",
+        "targetId": "657e17e9-dd00-4e12-8ae0-5392fe551651"
+       },
+       {
+        "id": "ee1461dd-e5fd-4e9d-8c95-0344ba08bdc2",
+        "name": "Android",
+        "targetId": "657e17e9-dd00-4e12-8ae0-5392fe551651"
+       }
+      ],
+      "uri": "https://play.google.com/store/apps/details?id=com.bitso.wallet&pcampaignid=web_share"
+     }
+    ]
+   },
+   {
+    "description": null,
+    "descriptionHtml": null,
+    "id": "cf9bb732-5029-42e3-875a-f1969e93ee80",
+    "inScope": false,
+    "name": "Out of Scope",
+    "recentChangeFlags": null,
+    "rewardRange": null,
+    "rewardRangeData": {},
+    "sortOrder": 1,
+    "targets": [
+     {
+      "category": "website",
+      "description": null,
+      "engagementBriefTargetGroupTarget": {
+       "id": "5f0b8a19-451c-4e83-bdd1-d5430b559fb5",
+       "sortOrder": 0
+      },
+      "id": "a2ea02f1-6821-4b67-b14e-4ee8a629630c",
+      "ipAddress": "",
+      "name": "help.bitso.com",
+      "recentChangeFlags": null,
+      "sortOrder": 0,
+      "tags": null,
+      "uri": ""
+     },
+     {
+      "category": "website",
+      "description": null,
+      "engagementBriefTargetGroupTarget": {
+       "id": "7e7f56f3-d5b4-4519-a53d-ddff1a0dd51b",
+       "sortOrder": 1
+      },
+      "id": "12e1223c-1fef-4390-b310-799cc0f03da0",
+      "ipAddress": "",
+      "name": "status.bitso.com\t",
+      "recentChangeFlags": null,
+      "sortOrder": 1,
+      "tags": null,
+      "uri": ""
+     },
+     {
+      "category": "website",
+      "description": null,
+      "engagementBriefTargetGroupTarget": {
+       "id": "a967ce4e-2716-4230-b095-bd0a7d5b032e",
+       "sortOrder": 2
+      },
+      "id": "5414e6f5-6744-4ff2-bb44-0187fc4f26d0",
+      "ipAddress": "",
+      "name": "dev.bitso.com\t",
+      "recentChangeFlags": null,
+      "sortOrder": 2,
+      "tags": null,
+      "uri": ""
+     },
+     {
+      "category": "website",
+      "description": null,
+      "engagementBriefTargetGroupTarget": {
+       "id": "e0b7f343-357e-4c4d-8eae-b8088974103b",
+       "sortOrder": 3
+      },
+      "id": "41d8a51c-16dd-447a-95b2-4fdc85153507",
+      "ipAddress": "",
+      "name": "blog.bitso.com",
+      "recentChangeFlags": null,
+      "sortOrder": 3,
+      "tags": null,
+      "uri": ""
+     },
+     {
+      "category": "website",
+      "description": null,
+      "engagementBriefTargetGroupTarget": {
+       "id": "fcf00539-57f3-48e8-952b-f521b8c55de9",
+       "sortOrder": 4
+      },
+      "id": "40886fa0-57ba-45c0-bd07-ac5a93791eb2",
+      "ipAddress": "",
+      "name": "stage.bitso.com",
+      "recentChangeFlags": null,
+      "sortOrder": 4,
+      "tags": null,
+      "uri": ""
+     },
+     {
+      "category": "website",
+      "description": null,
+      "engagementBriefTargetGroupTarget": {
+       "id": "a0085537-5520-4f32-8d05-30d213f9d407",
+       "sortOrder": 5
+      },
+      "id": "b00dad90-f5a8-4731-90ba-8357eaea7186",
+      "ipAddress": "",
+      "name": "landing.bitso.com\t",
+      "recentChangeFlags": null,
+      "sortOrder": 5,
+      "tags": null,
+      "uri": ""
+     }
+    ]
+   }
+  ],
+  "vrtScopeRules": []
+ },
+ "disclosedReportsEnabled": true,
+ "displayDisclosureTerms": true,
+ "engagementChangelogUrl": "/engagements/bitso-mbb-og/changelog/9ba515c8-b8d4-4a93-a50a-93685d63f9a0",
+ "engagementChangelogsUrl": "/engagements/bitso-mbb-og/changelog",
+ "engagementCrowdstreamUrl": "/engagements/bitso-mbb-og/crowdstream",
+ "engagementHiddenData": {},
+ "engagementId": "09a71606-59d0-4f36-8a10-ceccdfc2875c",
+ "engagementPaymentDetailUrl": null,
+ "engagementTypeDetail": {
+  "iconVariant": "bug-bounty",
+  "productLabel": "Bug Bounty",
+  "timeboxed": false
+ },
+ "engagementsUrl": "/engagements",
+ "id": "9ba515c8-b8d4-4a93-a50a-93685d63f9a0",
+ "identityUrl": null,
+ "identityVerificationSettingsUrl": "https://bugcrowd.com/h/settings/identity_verification",
+ "industryName": "Finance",
+ "isDemo": false,
+ "isFollowing": null,
+ "isLoggedIn": false,
+ "isSubmissionPublishThrottled": false,
+ "knownIssuesEnabled": true,
+ "lastTransitionAt": "2025-01-07T18:00:00.044Z",
+ "loginUrl": "/user/sign_in",
+ "logoBackgroundColor": "#fff",
+ "logoUrl": "https://logos.bugcrowdusercontent.com/logos/ce49/1668/78d6da33/7e0b508eecb365dabe2dd93e58906b2b_Avatar-Square-X.png",
+ "methodologyName": null,
+ "methodologyUrl": null,
+ "participation": "open",
+ "pausedReason": null,
+ "progressPercentage": 0,
+ "publishedAt": "2026-10-06T19:56:36.194Z",
+ "rewardAllocation": "pay_for_success",
+ "routesPaths": {
+  "announcements": "/engagements/bitso-mbb-og/announcements",
+  "brief": "/engagements/bitso-mbb-og",
+  "changelogs": "/engagements/bitso-mbb-og/changelog",
+  "crowdstream": "/engagements/bitso-mbb-og/crowdstream",
+  "hallOfFame": "/engagements/bitso-mbb-og/hall_of_fames",
+  "submissions": null
+ },
+ "scopedSubmissionsUrl": "/submissions?engagement%5B%5D=bitso-mbb-og&sort%5B%5D=submitted-desc",
+ "serviceLevel": "Platform",
+ "shouldShowHideButton": false,
+ "showIdVerificationAlert": false,
+ "statusLabel": "In progress",
+ "submitReportUrl": "/engagements/bitso-mbb-og/submissions/new",
+ "toggleSubscriptionUrl": "/bitso-mbb-og/engagement_subscribers",
+ "totalRewardPool": null,
+ "userBannedFromEngagement": null,
+ "vrtScopeRules": {
+  "data": []
+ },
+ "vrtVersion": "1.19.1"
+}
