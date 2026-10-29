@@ -281,6 +281,8 @@ def run(platforms=None, log=print, repo_poll=True, con=None):
     started = config.iso()
     cur = con.execute("INSERT INTO sync_runs(started_at, kind, status) VALUES(?,?,?)", (started, "sync", "running")); run_id = cur.lastrowid; con.commit()
     reg = load_all(); allstats = {}; lines = []
+    if db.kv_get(con, "tracking_since") is None:
+        db.kv_set(con, "tracking_since", started); con.commit()   # change history is meaningful from this instance's first sync on
     def L(msg):
         lines.append(f"{config.iso()} {msg}"); log(msg)
     for name, fn in reg.items():

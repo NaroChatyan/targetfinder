@@ -31,6 +31,9 @@ def main(argv=None):
     s = sub.add_parser("resolve"); s.add_argument("text")
     s = sub.add_parser("payouts"); s.add_argument("id")
     sub.add_parser("mcp", help="run the stdio MCP server")
+    s = sub.add_parser("init", help="first run: create the database, collect every platform, write public/ snapshots"); s.add_argument("--out", default="public"); s.add_argument("--no-repos", action="store_true")
+    s = sub.add_parser("export-snapshot", help="write JSON snapshots of the tracked state"); s.add_argument("--out", default="public")
+    s = sub.add_parser("import-snapshot", help="load JSON snapshots into the database"); s.add_argument("--in", dest="indir", default="public")
     a = ap.parse_args(argv)
     if a.cmd == "sync":
         from . import sync
@@ -104,6 +107,25 @@ def main(argv=None):
     if a.cmd == "mcp":
         from . import mcp_server
         mcp_server.main(); return
+    if a.cmd == "init":
+        from . import sync, snapshot, queries
+        from .collectors import load_all
+        config.ensure_dirs()
+        print(f"database: {config.DB_PATH}\ncollectors: {', '.join(load_all())}\ncollecting (first run records a baseline; expect no change events)...", flush=True)
+        st = sync.run(repo_poll=not a.no_repos)
+        print(json.dumps({k: (v.get("programs") if isinstance(v, dict) and "programs" in v else v) for k, v in st.items()}, indent=1))
+        con = _con(); out = a.out if os.path.isabs(a.out) else os.path.join(config.ROOT, a.out)
+        snapshot.export_snapshot(con, out); st = queries.status(con); con.close()
+        print(f"snapshot written to {out}\nstale collectors: {st['stale_platforms'] or 'none'}\nnext: `targetfinder sweep` for a report, `targetfinder schedule install --every 1` to keep it fresh"); return
+    if a.cmd == "export-snapshot":
+        from . import snapshot
+        out = a.out if os.path.isabs(a.out) else os.path.join(config.ROOT, a.out)
+        print(json.dumps(snapshot.export_snapshot(_con(), out))); print(out); return
+    if a.cmd == "import-snapshot":
+        from . import snapshot
+        src = a.indir if os.path.isabs(a.indir) else os.path.join(config.ROOT, a.indir)
+        if not os.path.exists(os.path.join(src, "meta.json")): print(f"no snapshot at {src} (meta.json missing)"); sys.exit(1)
+        print(json.dumps(snapshot.import_snapshot(_con(), src))); return
     from . import queries, activity
     con = _con()
     if a.cmd == "status":
