@@ -67,13 +67,17 @@ def list_programs(con, platforms=None, tags=None, search=None, updated_since=Non
         where += " AND p.reward_status=?"; args.append(reward_status)
     if status:
         where += " AND p.program_status=?"; args.append(status)
-    total = con.execute(f"SELECT COUNT(*) FROM programs p WHERE {where}", args).fetchone()[0]
     ob = {"name": "LOWER(p.name)", "updated": "p.last_updated DESC", "added": "p.added_at DESC", "launch": "p.launch_at DESC", "scope": "p.targets_updated_at DESC"}.get(order, "LOWER(p.name)")
+    if competition:
+        # the level is computed per program, so filter the whole ordered set first and page the result
+        want = [x.lower() for x in competition]
+        rows = con.execute(f"SELECT p.* FROM programs p WHERE {where} ORDER BY {ob}", args).fetchall()
+        items = [p for p in (model.program_obj(con, r, full=full) for r in rows) if p["competition"]["level"] in want]
+        total = len(items); items = items[(page - 1) * page_size: page * page_size]
+        return {"items": items, "page": page_meta(page, page_size, total, len(items))}
+    total = con.execute(f"SELECT COUNT(*) FROM programs p WHERE {where}", args).fetchone()[0]
     rows = con.execute(f"SELECT p.* FROM programs p WHERE {where} ORDER BY {ob} LIMIT ? OFFSET ?", args + [page_size, (page - 1) * page_size]).fetchall()
     items = [model.program_obj(con, r, full=full) for r in rows]
-    if competition:
-        want = [x.lower() for x in competition]
-        items = [p for p in items if p["competition"]["level"] in want]
     return {"items": items, "page": page_meta(page, page_size, total, len(items))}
 
 def program_row(con, pid):

@@ -1,5 +1,5 @@
 """Polite HTTP client: one request in flight per host, a minimum delay between requests to the same host, retries, gzip. stdlib only."""
-import json, time, urllib.request, urllib.error, urllib.parse, threading, gzip, io
+import json, time, urllib.request, urllib.error, urllib.parse, threading, gzip, io, email.utils, datetime as dt
 from . import config
 
 _last = {}            # host -> monotonic time the last request to it finished
@@ -52,7 +52,7 @@ def fetch(url, data=None, headers=None, method=None, timeout=None, retries=3, ac
                 raw = e.read()
                 if e.code in (429, 500, 502, 503, 504) and attempt < retries - 1:
                     last = HttpError(e.code, raw, url)
-                    backoff = min(60, 2 ** attempt * 3 + float(e.headers.get("Retry-After") or 0))
+                    backoff = min(60, 2 ** attempt * 3 + (retry_after_seconds(e.headers.get("Retry-After")) or 0))
                 else:
                     raise HttpError(e.code, raw, url)
             except Exception as ex:
@@ -62,6 +62,22 @@ def fetch(url, data=None, headers=None, method=None, timeout=None, retries=3, ac
                 _last[host] = time.monotonic()
         time.sleep(backoff)
     raise last or RuntimeError("fetch failed")
+
+def retry_after_seconds(value):
+    """Retry-After is either delay-seconds or an HTTP-date (RFC 9110). Returns seconds >= 0, or None when unparseable."""
+    if value is None:
+        return None
+    s = str(value).strip()
+    try:
+        return max(0.0, float(s))
+    except ValueError:
+        pass
+    try:
+        d = email.utils.parsedate_to_datetime(s)
+        if d.tzinfo is None: d = d.replace(tzinfo=dt.timezone.utc)
+        return max(0.0, (d - dt.datetime.now(dt.timezone.utc)).total_seconds())
+    except (TypeError, ValueError, IndexError, OverflowError):
+        return None
 
 def get_json(url, **kw):
     st, raw, hdrs = fetch(url, **kw)

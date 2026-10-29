@@ -120,11 +120,18 @@ def collect(existing, log):
         if not pi.get("hasNextPage") or page > 200:
             break
         after = pi.get("endCursor")
+    finish_scopes(programs, log)
+    return {"platform": "HackerOne", "programs": programs, "complete": True}
+
+def finish_scopes(programs, log, more=None):
+    """Fetch the remaining scope pages of programs with more than 250 assets. A failed page sets targets=None
+    so the stored scope is kept, instead of shrinking it to page one and reporting every later asset as removed."""
+    more = more or _more_scopes
     for p in programs:
         cur = p.pop("_scope_cursor", None)
         if cur:
             try:
-                p["targets"] = p["targets"] + _more_scopes(p["handle"], cur, log)
+                p["targets"] = p["targets"] + more(p["handle"], cur, log)
             except Exception as ex:
-                log(f"hackerone {p['handle']}: scope paging failed: {ex}")
-    return {"platform": "HackerOne", "programs": programs, "complete": True}
+                log(f"hackerone {p['handle']}: scope paging failed, keeping the stored scope: {ex}")
+                p["targets"] = None

@@ -76,7 +76,7 @@ class ExcludePlatforms(unittest.TestCase):
         progs = json.load(open(os.path.join(out, "programs.json")))
         self.assertEqual({p["platform"] for p in progs}, {"TestPlat"})
         self.assertFalse(any(t["program_id"].startswith("otherplat:") for t in json.load(open(os.path.join(out, "targets.json")))))
-        self.assertEqual(json.load(open(os.path.join(out, "meta.json")))["excluded_platforms"], ["OtherPlat"])
+        self.assertEqual(json.load(open(os.path.join(out, "meta.json")))["excluded_platforms"], ["otherplat"])
 
 
 if __name__ == "__main__":

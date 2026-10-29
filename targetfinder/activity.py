@@ -139,21 +139,25 @@ def history_changes(con, program_id=None, limit=50, offset=0, since_ts=None, cat
             counts = db.uj(e["counts"]) or {}
             summ = {"scope": f"Scope: {counts.get('added',0)} added, {counts.get('removed',0)} removed, {counts.get('updated',0)} updated", "rewards_changed": "Rewards changed", "fee_changed": "Submission fee changed",
                     "first_seen": "Program first seen", "left_listing": "Program left the listing", "returned": "Program returned", "paused": "Program paused", "resumed": "Program resumed", "updated": "Program details updated"}.get(e["change_type"], e["change_type"])
-            items.append({"id": f"ev-{e['id']}", "program": model.program_ref(e), "at": e["observed_at"], "category": e["category"], "type": e["change_type"], "summary": summ, "counts": counts or None,
+            items.append({"id": f"ev-{e['id']}", "program": _program_ref(e), "at": e["observed_at"], "category": e["category"], "type": e["change_type"], "summary": summ, "counts": counts or None,
                           "before": db.uj(e["before"]), "after": db.uj(e["after"]), "source": e["source"]})
     if category in (None, "repositories"):
         rw = []; ra = []
         if program_id: rw.append("p.id=?"); ra.append(program_id)
         if since_ts: rw.append("rc.observed_at>=?"); ra.append(since_ts)
         rq = (" AND " + " AND ".join(rw)) if rw else ""
-        for rc in con.execute(f"""SELECT rc.id, rc.observed_at, rc.ref_name, rc.before_sha, rc.after_sha, rc.push_kind, r.full_name, r.url, r.provider, p.id, p.name, p.platform, p.handle, p.data FROM repo_changes rc JOIN repos r ON r.id=rc.repo_id
+        for rc in con.execute(f"""SELECT rc.id, rc.observed_at, rc.ref_name, rc.before_sha, rc.after_sha, rc.push_kind, r.full_name, r.url, r.provider, p.id AS pid, p.name, p.platform, p.handle, p.data FROM repo_changes rc JOIN repos r ON r.id=rc.repo_id
                                   JOIN targets t ON t.repo_url=r.url AND t.is_active=1 JOIN programs p ON p.id=t.program_id WHERE 1=1{rq} GROUP BY rc.id, p.id ORDER BY rc.observed_at DESC LIMIT ?""", ra + [limit + offset]):
-            items.append({"id": f"rc-{rc['id']}", "program": model.program_ref(rc), "at": rc["observed_at"], "category": "repositories", "type": "push", "summary": f"Push to {rc['full_name']} ({rc['push_kind'] or 'unclassified'})",
+            items.append({"id": f"rc-{rc['id']}", "program": _program_ref(rc), "at": rc["observed_at"], "category": "repositories", "type": "push", "summary": f"Push to {rc['full_name']} ({rc['push_kind'] or 'unclassified'})",
                           "counts": None, "before": {"sha": rc["before_sha"]}, "after": {"sha": rc["after_sha"], "ref": rc["ref_name"], "repo": rc["full_name"], "compare_url": repowatch_compare(rc)}, "source": "repository_monitor"})
         items.sort(key=lambda x: x["at"], reverse=True)
         items = items[:limit]
     return {"items": items, "page": {"total": total, "limit": limit, "offset": offset, "returned": len(items), "next_cursor": str(offset + limit) if offset + limit < total else None,
                                      "tracking_since": db.kv_get(con, "tracking_since"), "as_of": config.iso()}}
+
+def _program_ref(row):
+    """program_ref for joined rows whose own `id` column is the event: the program id is aliased as `pid`."""
+    return {"id": row["pid"], "name": row["name"], "platform": row["platform"], "handle": row["handle"], "url": db.uj(row["data"], {}).get("link")}
 
 def repowatch_compare(rc):
     from . import repowatch

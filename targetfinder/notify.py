@@ -11,8 +11,8 @@ Config file data/notify.json (or env DISCORD_WEBHOOK_URL / TELEGRAM_BOT_TOKEN / 
   }
 }
 Cursors (last notified row ids) live in the kv table, so nothing is sent twice."""
-import json, os, urllib.request, urllib.error, datetime as dt
-from . import db, config, queries, tools, model
+import json, os, time, urllib.request, urllib.error, datetime as dt
+from . import db, config, queries, tools, model, http
 
 CONFIG_PATH = os.path.join(config.DATA_DIR, "notify.json")
 CODE_KINDS = (None, "code", "mixed", "tests", "unknown")
@@ -43,9 +43,40 @@ def configured(cfg):
 
 # ---- senders ------------------------------------------------------------------------------------
 def _post(url, payload, headers=None):
-    req = urllib.request.Request(url, data=json.dumps(payload).encode(), headers={"Content-Type": "application/json", "User-Agent": config.USER_AGENT, **(headers or {})})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return r.status
+    for attempt in range(2):
+        req = urllib.request.Request(url, data=json.dumps(payload).encode(), headers={"Content-Type": "application/json", "User-Agent": config.USER_AGENT, **(headers or {})})
+        try:
+            with urllib.request.urlopen(req, timeout=30) as r:
+                return r.status
+        except urllib.error.HTTPError as e:
+            if e.code == 429 and attempt == 0:   # Discord / Telegram rate limit: wait as told (capped), retry once
+                time.sleep(min(10.0, http.retry_after_seconds(e.headers.get("Retry-After")) or 2.0)); continue
+            raise
+
+def channels(cfg):
+    out = []
+    if cfg.get("discord_webhook"): out.append("discord")
+    tg = cfg.get("telegram") or {}
+    if tg.get("bot_token") and tg.get("chat_id"): out.append("telegram")
+    return out
+
+def send_to(cfg, channel, text, sender=None):
+    """Send one message (chunked) to one channel. Returns list of (channel, ok, info)."""
+    post = sender or _post; results = []
+    if channel == "discord":
+        for chunk in _chunks(text, 1900):
+            try:
+                post(cfg["discord_webhook"], {"content": chunk, "allowed_mentions": {"parse": []}}); results.append(("discord", True, len(chunk)))
+            except Exception as ex:
+                results.append(("discord", False, str(ex)[:200]))
+    elif channel == "telegram":
+        tg = cfg["telegram"]
+        for chunk in _chunks(text, 3900):
+            try:
+                post(f"https://api.telegram.org/bot{tg['bot_token']}/sendMessage", {"chat_id": tg["chat_id"], "text": chunk, "disable_web_page_preview": True}); results.append(("telegram", True, len(chunk)))
+            except Exception as ex:
+                results.append(("telegram", False, str(ex)[:200]))
+    return results
 
 def _chunks(text, limit):
     out, cur = [], ""
@@ -58,22 +89,11 @@ def _chunks(text, limit):
 
 def send(cfg, text, sender=None):
     """Send one message (chunked) to every configured channel. Returns list of (channel, ok, info)."""
-    results = []
-    post = sender or _post
-    if cfg.get("discord_webhook"):
-        for chunk in _chunks(text, 1900):
-            try:
-                post(cfg["discord_webhook"], {"content": chunk, "allowed_mentions": {"parse": []}}); results.append(("discord", True, len(chunk)))
-            except Exception as ex:
-                results.append(("discord", False, str(ex)[:200]))
-    tg = cfg.get("telegram") or {}
-    if tg.get("bot_token") and tg.get("chat_id"):
-        for chunk in _chunks(text, 3900):
-            try:
-                post(f"https://api.telegram.org/bot{tg['bot_token']}/sendMessage", {"chat_id": tg["chat_id"], "text": chunk, "disable_web_page_preview": True}); results.append(("telegram", True, len(chunk)))
-            except Exception as ex:
-                results.append(("telegram", False, str(ex)[:200]))
-    return results
+    return [r for ch in channels(cfg) for r in send_to(cfg, ch, text, sender)]
+
+def _current_ids(con):
+    return {"event": con.execute("SELECT COALESCE(MAX(id),0) FROM program_events").fetchone()[0], "change": con.execute("SELECT COALESCE(MAX(id),0) FROM target_changes").fetchone()[0],
+            "push": con.execute("SELECT COALESCE(MAX(id),0) FROM repo_changes").fetchone()[0]}
 
 # ---- digest ---------------------------------------------------------------------------------------
 def _fee(prow):
@@ -154,20 +174,33 @@ def run(con=None, log=print, sender=None, dry_run=False):
     own = con is None; con = con or db.connect()
     if not configured(cfg) and not dry_run:
         log("notify: no channel configured (targetfinder notify setup ...)"); return {"sent": 0, "configured": False}
-    cursors = db.kv_get(con, "notify_cursors", {}) or {}
-    if not cursors:   # first run: start from now, do not replay history
-        cursors = {"event": con.execute("SELECT COALESCE(MAX(id),0) FROM program_events").fetchone()[0], "change": con.execute("SELECT COALESCE(MAX(id),0) FROM target_changes").fetchone()[0], "push": con.execute("SELECT COALESCE(MAX(id),0) FROM repo_changes").fetchone()[0]}
-        db.kv_set(con, "notify_cursors", cursors); con.commit(); log("notify: cursors initialised at current state; alerts start with the next sync")
+    chans = channels(cfg) or (["preview"] if dry_run else [])
+    stored = db.kv_get(con, "notify_cursors", {}) or {}
+    if stored and "event" in stored:   # legacy single cursor set: every channel continues from it
+        stored = {ch: dict(stored) for ch in chans}
+    if not stored:   # first run: start from now, do not replay history
+        stored = {ch: _current_ids(con) for ch in chans}
+        db.kv_set(con, "notify_cursors", stored); con.commit(); log("notify: cursors initialised at current state; alerts start with the next sync")
         return {"sent": 0, "configured": configured(cfg), "initialised": True}
-    text, new = build_digest(con, cfg, cursors)
-    if not text:
-        log("notify: nothing new"); return {"sent": 0, "configured": True}
     header = f"TargetFinder {config.iso()[:16]}Z\n\n"
+    results = []; texts = {}
+    for ch in chans:
+        cursors = stored.get(ch)
+        if cursors is None:   # channel added later: start it from now
+            stored[ch] = _current_ids(con); log(f"notify: {ch} cursors initialised; alerts start with the next sync"); continue
+        text, new = build_digest(con, cfg, cursors)
+        if not text:
+            continue
+        if dry_run:
+            texts[ch] = header + text; continue
+        res = send_to(cfg, ch, header + text, sender); results += res
+        if res and all(ok for _, ok, _ in res):   # a failed chunk keeps the cursor, so the whole digest is resent next run
+            stored[ch] = new
+    db.kv_set(con, "notify_cursors", stored); con.commit()
     if dry_run:
-        return {"sent": 0, "dry_run": True, "text": header + text, "cursors": new}
-    res = send(cfg, header + text, sender)
-    if any(ok for _, ok, _ in res):
-        db.kv_set(con, "notify_cursors", new); con.commit()
-    log(f"notify: {res}")
+        return {"sent": 0, "dry_run": True, "text": next(iter(texts.values()), ""), "cursors": stored}
+    if not results:
+        log("notify: nothing new"); return {"sent": 0, "configured": True}
+    log(f"notify: {results}")
     if own: con.close()
-    return {"sent": sum(1 for _, ok, _ in res if ok), "results": res, "chars": len(text)}
+    return {"sent": sum(1 for _, ok, _ in results if ok), "results": results, "chars": sum(n for _, ok, n in results if ok and isinstance(n, int))}

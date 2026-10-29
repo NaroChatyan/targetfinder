@@ -30,12 +30,17 @@ jobs:
 
       - name: Fetch the data branch into public/
         run: |
-          if git fetch --depth 1 origin data:refs/remotes/origin/data 2>/dev/null; then
+          # exit 0 = branch exists, 2 = no such branch (first run), anything else = origin unreachable: fail, never wipe
+          set +e; git ls-remote --exit-code --heads origin data >/dev/null; rc=$?; set -e
+          if [ "$rc" = 0 ]; then
+            git fetch --depth 1 origin data:refs/remotes/origin/data
             git worktree add public origin/data
             echo "previous snapshot: $(python3 -c "import json;print(json.load(open('public/meta.json'))['exported_at'])" 2>/dev/null || echo none)"
-          else
+          elif [ "$rc" = 2 ]; then
             echo "no data branch yet: first run"
             mkdir -p public
+          else
+            echo "cannot read origin (git exit $rc); refusing to continue without the previous snapshot"; exit 1
           fi
 
       - name: Import the previous snapshot

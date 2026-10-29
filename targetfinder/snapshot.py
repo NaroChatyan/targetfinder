@@ -21,8 +21,8 @@ def export_snapshot(con, out_dir, exclude_platforms=None):
     """Write the snapshot files; `exclude_platforms` leaves whole platforms out (see docs/PLATFORMS.md on redistribution)."""
     os.makedirs(out_dir, exist_ok=True)
     since = config.iso(config.utcnow() - dt.timedelta(days=WINDOW_DAYS))
-    excl = sorted(exclude_platforms or [])
-    pf = "p.platform NOT IN (%s)" % ",".join("?" * len(excl)) if excl else "1=1"
+    excl = sorted({x.lower().replace("_", "-").replace(" ", "-") for x in (exclude_platforms or []) if x and x.strip()})
+    pf = "LOWER(REPLACE(p.platform,' ','-')) NOT IN (%s)" % ",".join("?" * len(excl)) if excl else "1=1"
     files = {}
     files["programs.json"] = _rows(con, f"SELECT p.* FROM programs p WHERE {pf} ORDER BY p.id", excl)
     files["targets.json"] = _rows(con, f"SELECT t.* FROM targets t JOIN programs p ON p.id=t.program_id WHERE {pf} ORDER BY t.program_id, t.norm", excl)

@@ -129,7 +129,7 @@ def _ensure_repo(con, repo):
     if not repo:
         return
     url, kind, prefix, provider, host, full = repo
-    con.execute("INSERT INTO repos(url, provider, provider_host, full_name, active) VALUES(?,?,?,?,1) ON CONFLICT(url) DO UPDATE SET active=1", (url, provider, host, full))
+    con.execute("INSERT INTO repos(url, provider, provider_host, full_name, active) VALUES(?,?,?,?,1) ON CONFLICT(url) DO NOTHING", (url, provider, host, full))   # active=0 means retired by polling; it stays retired
 
 def apply_targets(con, pid, targets, now, source, mode="live", changed_at=None, insert_missing=True, hint_ts=None, force_baseline=False):
     """Diff a program's full target list against the stored one. Returns counts dict."""
@@ -284,6 +284,7 @@ def run(platforms=None, log=print, repo_poll=True, con=None, on_platform=None):
     started = config.iso()
     cur = con.execute("INSERT INTO sync_runs(started_at, kind, status) VALUES(?,?,?)", (started, "sync", "running")); run_id = cur.lastrowid; con.commit()
     reg = load_all(); allstats = {}; lines = []
+    from .collectors import btd; btd.clear()   # scope mirror is re-downloaded once per run
     if db.kv_get(con, "tracking_since") is None:
         db.kv_set(con, "tracking_since", started); con.commit()   # change history is meaningful from this instance's first sync on
     def L(msg):
