@@ -139,3 +139,15 @@ budget used to classify pushes from 50/h to 5000/h).
 Run `python3 -m unittest -v` (no network). To add a platform, write `parse_listing` / `parse_scope` as pure
 functions, record a trimmed fixture with `tools/record_fixtures.py`, add the terms review line to
 docs/PLATFORMS.md, and register `collect()`. MIT licensed.
+
+## Support
+
+TargetFinder is free and has no paid tier. If it helped you land a bounty and you want to give something
+back, small amounts on cheap networks are welcome:
+
+| network | address |
+|---|---|
+| ETH or USDC on Base, Arbitrum or Ethereum | `0x5e806C4453885d65df0c860CD295ff51af1766B6` |
+| USDT (TRC-20) on TRON | `TE5HHm8tVSPYUfSz33dGtLS4HVoxfDgMVV` |
+
+Send on the network named next to the address; funds sent on another network cannot be recovered.
