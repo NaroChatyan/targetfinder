@@ -1,0 +1,12 @@
+.git
+.github
+.serena
+data/
+sweeps/
+public/
+tests/
+tools/
+docs/
+__pycache__/
+*.pyc
+*.db

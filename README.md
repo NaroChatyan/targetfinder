@@ -46,6 +46,15 @@ bin/targetfinder schedule install --every 1   # hourly in the background (system
 bin/targetfinder loop --every 2           # foreground loop: sync + sweep every 2 hours, Ctrl-C to stop
 ```
 
+Or as a container, with the data kept in a named volume:
+
+```bash
+docker build -t targetfinder .
+docker run -v targetfinder-data:/data targetfinder init
+docker run -v targetfinder-data:/data targetfinder sweep
+docker run -i -v targetfinder-data:/data targetfinder          # the MCP server over stdio
+```
+
 Reports land in `sweeps/SWEEP_<date>.md` with a JSON twin. The first run records a baseline, so the
 first sweep shows no "added" targets: changes are only reported for things TargetFinder had already seen.
 
