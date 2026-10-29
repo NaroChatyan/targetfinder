@@ -1,0 +1,60 @@
+# Hourly collection: imports the previous snapshot from the `data` branch, syncs every platform, exports JSON snapshots
+# and commits them back to `data` only when something changed. Free on public repositories.
+name: sync
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # optional: raises the GitHub compare budget used to classify pushes
+      TARGETFINDER_REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch the data branch into public/
+        run: |
+          if git fetch --depth 1 origin data:refs/remotes/origin/data 2>/dev/null; then
+            git worktree add public origin/data
+            echo "previous snapshot: $(python3 -c "import json;print(json.load(open('public/meta.json'))['exported_at'])" 2>/dev/null || echo none)"
+          else
+            echo "no data branch yet: first run"
+            mkdir -p public
+          fi
+
+      - name: Import the previous snapshot
+        run: |
+          if [ -f public/meta.json ]; then bin/targetfinder import-snapshot --in public; else echo "nothing to import"; fi
+
+      - name: Sync every platform and poll repositories
+        run: bin/targetfinder sync
+
+      - name: Export snapshots
+        run: bin/targetfinder export-snapshot --out public
+
+      - name: Commit and push when something changed
+        run: |
+          cd public
+          if [ ! -e .git ]; then
+            git init -q -b data
+            git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          fi
+          git add -A
+          if git diff --cached --quiet; then echo "no changes"; exit 0; fi
+          git -c user.name="targetfinder-bot" -c user.email="targetfinder-bot@users.noreply.github.com" commit -q -m "data: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push origin HEAD:data

@@ -120,7 +120,7 @@ bin/targetfinder     launcher
 tests/               unittest suite (python3 -m unittest -v); tests/fixtures/ holds recorded, trimmed platform payloads
 tools/record_fixtures.py   maintainer tool: re-record the fixtures (network)
 docs/                API.md, DESIGN.md, SCORING.md, PLATFORMS.md
-public/              JSON snapshots (written by init / export-snapshot; the data branch in CI)
+public/              JSON snapshots (written by init / export-snapshot, git-ignored on main; the data branch in CI)
 data/                your database and logs (git-ignored)
 ```
 
