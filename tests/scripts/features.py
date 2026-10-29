@@ -41,7 +41,7 @@ for h in ("## New programs — 1", "## Submission fee changes — 1", "[NOW FREE
     assert h in text, h
 text2, _ = sweep.run(since="2000-01-01T00:00:00Z", write=False, log=lambda m: None, all_pushes=True)
 assert "## Commits — 2 pushes" in text2, [l for l in text2.splitlines() if l.startswith("## Commits")]
-assert os.path.exists(os.path.join(config.CACHE_DIR, "SWEEP_" + __import__("datetime").date.today().isoformat() + ".md"))
+assert os.path.exists(os.path.join(config.CACHE_DIR, "SWEEP_" + config.utcnow().date().isoformat() + ".md"))   # the report is named by UTC date
 # debounce + first-listing baseline already covered by the semantics test; classify_paths covered earlier
 # notifications: stub sender, cursor semantics
 from targetfinder import notify

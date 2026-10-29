@@ -41,6 +41,22 @@ def is_cidr(s):
 _host_re = re.compile(r"^(\*\.)?([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9-]{2,63}\.?$", re.I)
 _evm_addr = re.compile(r"\b0x[0-9a-fA-F]{40}\b")
 
+SIGNED_QUERY_KEYS = ("x-amz-credential", "x-amz-signature", "x-amz-security-token", "signature", "x-goog-signature", "sig", "se", "sv")
+
+def public_url(u):
+    """Drop the query string of a presigned link (S3 / GCS / Azure style): the embedded temporary credentials expire within hours
+    and trip secret scanners once published. Other query strings are kept."""
+    if not u or not isinstance(u, str):
+        return u
+    try:
+        p = urllib.parse.urlsplit(u)
+    except ValueError:
+        return u
+    keys = {k.lower() for k, _ in urllib.parse.parse_qsl(p.query, keep_blank_values=True)}
+    if keys & set(SIGNED_QUERY_KEYS):
+        return urllib.parse.urlunsplit((p.scheme, p.netloc, p.path, "", ""))
+    return u
+
 def repo_from_url(u):
     """Return (repo_url, path_kind, path_prefix, provider, host, full_name) or None."""
     try:

@@ -33,6 +33,7 @@ def apply_program(con, p, now, source, mode="live"):
         fee_updated = now if (fee is not None and (old is None or old["fee_amount"] != (fee or {}).get("amount"))) else (old["fee_updated_at"] if old else None)
     if isinstance(p.get("name"), str): p["name"] = p["name"].strip() or None
     p["report_count"] = intel.as_count(p.get("report_count"))
+    p["profile_picture"] = normalize.public_url(p.get("profile_picture"))
     data = {k: p.get(k) for k in ("name", "link", "profile_picture", "program_kind", "program_status", "is_active", "reward_status", "bounty_min", "bounty_max",
                                    "reward_currency", "launch_at", "launch_at_precision", "ends_at", "report_count", "report_count_source", "report_count_label",
                                    "policy_url", "safe_harbor", "raw")}
