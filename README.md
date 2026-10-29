@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/img/logo-glitch.png" alt="TargetFinder: a sniper scope with a bug in the crosshair" width="360"></p>
+
 # TargetFinder
 
 Find bug-bounty targets worth your time, from public data, on your own machine. TargetFinder collects

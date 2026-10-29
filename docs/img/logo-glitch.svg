@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" aria-label="TargetFinder: a red sniper scope reticle with a green bug in the crosshair, laser dot on the bug, matrix code and glitch tearing around it" viewBox="0 0 320 320" width="320" height="320" style="display: block; font-family: 'JetBrains Mono', 'DejaVu Sans Mono', 'Noto Sans CJK HK', monospace">
+  <defs>
+    <g id="bug">
+      <g stroke="#39ff7a" stroke-width="4.4" stroke-linecap="round" fill="none">
+        <line x1="150" y1="126" x2="140" y2="113"></line>
+        <line x1="170" y1="126" x2="180" y2="113"></line>
+        <line x1="141" y1="155" x2="120" y2="143"></line>
+        <line x1="179" y1="155" x2="200" y2="143"></line>
+        <line x1="139" y1="170" x2="115" y2="170"></line>
+        <line x1="181" y1="170" x2="205" y2="170"></line>
+        <line x1="143" y1="185" x2="123" y2="201"></line>
+        <line x1="177" y1="185" x2="197" y2="201"></line>
+      </g>
+      <circle cx="160" cy="135" r="12" fill="#39ff7a"></circle>
+      <ellipse cx="160" cy="172" rx="20.5" ry="28.5" fill="#39ff7a"></ellipse>
+      <line x1="160" y1="150" x2="160" y2="199" stroke="#0f1114" stroke-width="3" stroke-linecap="round"></line>
+      <circle cx="150" cy="165" r="2.5" fill="#0f1114"></circle>
+      <circle cx="170" cy="165" r="2.5" fill="#0f1114"></circle>
+      <circle cx="148" cy="182" r="2.5" fill="#0f1114"></circle>
+      <circle cx="172" cy="182" r="2.5" fill="#0f1114"></circle>
+    </g>
+    <g id="scope">
+      <circle cx="160" cy="160" r="104" fill="none" stroke="#ff3b3b" stroke-width="11"></circle>
+      <circle cx="160" cy="160" r="78" fill="none" stroke="#ff3b3b" stroke-width="1.6" opacity="0.5"></circle>
+      <line x1="42" y1="160" x2="118" y2="160" stroke="#ff3b3b" stroke-width="5" stroke-linecap="round"></line>
+      <line x1="202" y1="160" x2="278" y2="160" stroke="#ff3b3b" stroke-width="5" stroke-linecap="round"></line>
+      <line x1="160" y1="42" x2="160" y2="118" stroke="#ff3b3b" stroke-width="5" stroke-linecap="round"></line>
+      <line x1="160" y1="202" x2="160" y2="278" stroke="#ff3b3b" stroke-width="5" stroke-linecap="round"></line>
+      <circle cx="86" cy="160" r="4" fill="#ff3b3b"></circle>
+      <circle cx="234" cy="160" r="4" fill="#ff3b3b"></circle>
+      <circle cx="160" cy="86" r="4" fill="#ff3b3b"></circle>
+      <circle cx="160" cy="234" r="4" fill="#ff3b3b"></circle>
+    </g>
+    <g id="mark">
+      <use href="#scope"></use>
+      <use href="#bug"></use>
+      <circle cx="160" cy="160" r="7" fill="#ff3b3b" opacity="0.35"></circle>
+      <circle cx="160" cy="160" r="4" fill="#ff3b3b"></circle>
+    </g>
+    <clipPath id="s1"><rect x="0" y="38" width="320" height="5"></rect></clipPath>
+    <clipPath id="s2"><rect x="0" y="64" width="320" height="14"></rect></clipPath>
+    <clipPath id="s3"><rect x="0" y="92" width="320" height="9"></rect></clipPath>
+    <clipPath id="s4"><rect x="0" y="118" width="320" height="3"></rect></clipPath>
+    <clipPath id="s5"><rect x="0" y="151" width="320" height="6"></rect></clipPath>
+    <clipPath id="s6"><rect x="0" y="178" width="320" height="7"></rect></clipPath>
+    <clipPath id="s7"><rect x="0" y="213" width="320" height="12"></rect></clipPath>
+    <clipPath id="s8"><rect x="0" y="246" width="320" height="4"></rect></clipPath>
+    <clipPath id="s9"><rect x="0" y="268" width="320" height="10"></rect></clipPath>
+    <clipPath id="s10"><rect x="0" y="296" width="320" height="5"></rect></clipPath>
+    <clipPath id="v1"><rect x="58" y="0" width="6" height="320"></rect></clipPath>
+    <clipPath id="v2"><rect x="228" y="0" width="10" height="320"></rect></clipPath>
+    <clipPath id="v3"><rect x="166" y="0" width="4" height="320"></rect></clipPath>
+    <filter id="cyan"><feColorMatrix type="hueRotate" values="180"></feColorMatrix></filter>
+    <filter id="magenta"><feColorMatrix type="hueRotate" values="300"></feColorMatrix></filter>
+    <pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse"><rect x="0" y="0" width="4" height="1" fill="#000000" opacity="0.3"></rect></pattern>
+  </defs>
+  <rect x="0" y="0" width="320" height="320" fill="#0f1114"></rect>
+  
+    <g fill="#39ff7a" font-size="11" font-weight="500">
+      <text x="12" y="30" opacity="0.6" style="writing-mode: tb; letter-spacing: 4px">ｱ1ﾊ0ﾐ7ﾋ0ｰ1ｳ0ﾘ</text>
+      <text x="34" y="150" opacity="0.3" style="writing-mode: tb; letter-spacing: 4px">0x7c1fｶ3ﾂ1</text>
+      <text x="56" y="-20" opacity="0.2" style="writing-mode: tb; letter-spacing: 4px">ﾘ1ﾖ0ﾀ8ﾊ1ｺ0ｷ1ﾈ</text>
+      <text x="78" y="200" opacity="0.45" style="writing-mode: tb; letter-spacing: 4px">ﾊ0ﾄ1ｿ0ﾐ</text>
+      <text x="100" y="90" opacity="0.16" style="writing-mode: tb; letter-spacing: 4px">ﾒ1ﾗ0ｾ4ｺ1</text>
+      <text x="122" y="-30" opacity="0.5" style="writing-mode: tb; letter-spacing: 4px">ｱ0ｴ1ﾔ0ﾐ7</text>
+      <text x="144" y="240" opacity="0.22" style="writing-mode: tb; letter-spacing: 4px">ﾅ1ﾎ0ｾ</text>
+      <text x="176" y="20" opacity="0.18" style="writing-mode: tb; letter-spacing: 4px">ｻ1ﾔ0ﾈ9ｦ1ﾗ</text>
+      <text x="198" y="170" opacity="0.4" style="writing-mode: tb; letter-spacing: 4px">ﾓ0ﾕ1ﾙ3ﾈ0ｸ</text>
+      <text x="220" y="-10" opacity="0.26" style="writing-mode: tb; letter-spacing: 4px">ﾗ1ｾ0ﾈ7ｽ1ﾂ0ﾋ</text>
+      <text x="242" y="110" opacity="0.55" style="writing-mode: tb; letter-spacing: 4px">0ｼ1ﾚ0ｹ1ｿ</text>
+      <text x="264" y="230" opacity="0.2" style="writing-mode: tb; letter-spacing: 4px">ﾂ1ﾌ0ｴ4</text>
+      <text x="286" y="40" opacity="0.34" style="writing-mode: tb; letter-spacing: 4px">ｴ1ﾇ0ﾏ8ｸ0ﾒ1ﾍ</text>
+      <text x="306" y="180" opacity="0.6" style="writing-mode: tb; letter-spacing: 4px">1ﾎ0ﾋ1ｾ0</text>
+    </g>
+    <g fill="#39ff7a" font-size="7" font-weight="500" opacity="0.5">
+      <text x="14" y="312">0x7c1f 3a 19 c2 ff 00 1b 94 e7 2d 60 b8 4c d1 05 fa 33 8e 72 a9 c0 1e 6d 47</text>
+      <text x="14" y="12">ERR 0x1B 2026-10-29 SCOPE LOCK 160.160 TARGET ACQUIRED 0xFF3B3B</text>
+    </g>
+    <g fill="#ff3b3b" opacity="0.1">
+      <rect x="0" y="54" width="320" height="2"></rect>
+      <rect x="0" y="131" width="320" height="1"></rect>
+      <rect x="0" y="199" width="320" height="3"></rect>
+      <rect x="0" y="259" width="320" height="1"></rect>
+    </g>
+    <use href="#mark" transform="translate(-9 0)" opacity="0.5" filter="url(#cyan)"></use>
+    <use href="#mark" transform="translate(7 2)" opacity="0.35" filter="url(#magenta)"></use>
+    <use href="#bug" transform="translate(-22 6)" opacity="0.22"></use>
+    <use href="#bug" transform="translate(26 -4)" opacity="0.16"></use>
+  
+  <use href="#mark"></use>
+  
+    <use href="#mark" clip-path="url(#s1)" transform="translate(-30 0)"></use>
+    <use href="#mark" clip-path="url(#s2)" transform="translate(16 0)" filter="url(#cyan)" opacity="0.9"></use>
+    <use href="#mark" clip-path="url(#s3)" transform="translate(22 0)"></use>
+    <use href="#mark" clip-path="url(#s4)" transform="translate(-44 0)"></use>
+    <use href="#mark" clip-path="url(#s5)" transform="translate(-18 0)" opacity="0.9"></use>
+    <use href="#mark" clip-path="url(#s6)" transform="translate(34 0)" filter="url(#magenta)" opacity="0.8"></use>
+    <use href="#mark" clip-path="url(#s7)" transform="translate(11 0)"></use>
+    <use href="#mark" clip-path="url(#s8)" transform="translate(-52 0)" opacity="0.85"></use>
+    <use href="#mark" clip-path="url(#s9)" transform="translate(19 0)"></use>
+    <use href="#mark" clip-path="url(#s10)" transform="translate(-14 0)" opacity="0.7"></use>
+    <use href="#mark" clip-path="url(#v1)" transform="translate(0 -24)" opacity="0.8"></use>
+    <use href="#mark" clip-path="url(#v2)" transform="translate(0 18)" opacity="0.75" filter="url(#cyan)"></use>
+    <use href="#mark" clip-path="url(#v3)" transform="translate(0 -40)" opacity="0.9"></use>
+    <g fill="#39ff7a">
+      <rect x="18" y="70" width="26" height="3" opacity="0.7"></rect>
+      <rect x="250" y="44" width="40" height="2" opacity="0.5"></rect>
+      <rect x="276" y="236" width="18" height="6" opacity="0.6"></rect>
+      <rect x="30" y="252" width="12" height="12" opacity="0.35"></rect>
+      <rect x="190" y="300" width="60" height="2" opacity="0.5"></rect>
+      <rect x="92" y="22" width="8" height="8" opacity="0.4"></rect>
+      <rect x="140" y="304" width="3" height="10" opacity="0.6"></rect>
+    </g>
+    <g fill="#ff3b3b">
+      <rect x="236" y="88" width="30" height="3" opacity="0.55"></rect>
+      <rect x="40" y="186" width="14" height="5" opacity="0.5"></rect>
+      <rect x="284" y="130" width="22" height="2" opacity="0.6"></rect>
+      <rect x="10" y="104" width="6" height="18" opacity="0.4"></rect>
+      <rect x="214" y="18" width="4" height="4" opacity="0.7"></rect>
+    </g>
+    <rect x="0" y="64" width="320" height="14" fill="#39ff7a" opacity="0.07"></rect>
+    <rect x="0" y="213" width="320" height="12" fill="#ff3b3b" opacity="0.07"></rect>
+    <rect x="0" y="118" width="320" height="3" fill="#ffffff" opacity="0.12"></rect>
+    <rect x="0" y="0" width="320" height="320" fill="url(#scan)"></rect>
+  
+</svg>
