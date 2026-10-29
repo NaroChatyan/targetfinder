@@ -14,7 +14,8 @@ def main(argv=None):
     s = sub.add_parser("serve", help="run the local HTTP API"); s.add_argument("--host"); s.add_argument("--port", type=int)
     s = sub.add_parser("sweep", help="standing 4-tab + commits + activity sweep"); s.add_argument("--since"); s.add_argument("--no-write", action="store_true"); s.add_argument("--out-dir")
     s.add_argument("--max-per-program", type=int, default=6); s.add_argument("--bulk-threshold", type=int, default=20); s.add_argument("--all-pushes", action="store_true", help="also list docs/deps/ci-only pushes"); s.add_argument("--live-only", action="store_true", help="hide platforms without a collector"); s.add_argument("--sync", action="store_true", help="collect fresh data first")
-    s = sub.add_parser("watch", help="watchlist of programs"); s.add_argument("action", choices=["add", "rm", "list", "report"]); s.add_argument("program_id", nargs="?"); s.add_argument("--note"); s.add_argument("--since")
+    s = sub.add_parser("watch", help="watchlist (add|rm|list|report), or with --every N: loop sync + sweep every N hours"); s.add_argument("action", nargs="?", choices=["add", "rm", "list", "report"]); s.add_argument("program_id", nargs="?"); s.add_argument("--note"); s.add_argument("--since"); s.add_argument("--every", type=float, help="hours between runs (loop mode)")
+    s = sub.add_parser("schedule", help="keep data fresh with the OS scheduler"); s.add_argument("action", choices=["install", "remove", "status"]); s.add_argument("--every", type=int, default=1, help="hours")
     s = sub.add_parser("clones", help="local git clones vs tracked pushes"); s.add_argument("--dir", default=".", help="directory holding your git clones (two levels deep)"); s.add_argument("--json", action="store_true")
     s = sub.add_parser("diff", help="save the compare diff of a push"); s.add_argument("push_id", type=int); s.add_argument("--out-dir")
     s = sub.add_parser("notify", help="Discord/Telegram alerts"); s.add_argument("action", choices=["setup", "show", "test", "run", "preview"]); s.add_argument("--discord"); s.add_argument("--telegram-token"); s.add_argument("--telegram-chat")
@@ -75,6 +76,22 @@ def main(argv=None):
             print(json.dumps(notify.run(_con(), dry_run=True), indent=1)); return
         if a.action == "run":
             print(json.dumps(notify.run(_con()), indent=1)); return
+    if a.cmd == "schedule":
+        from . import schedule
+        print(json.dumps({"install": schedule.install, "remove": schedule.remove, "status": schedule.status}[a.action](*((a.every,) if a.action == "install" else ())), indent=1)); return
+    if a.cmd == "watch" and a.action is None:
+        import time
+        from . import sync, sweep
+        every = a.every or 1.0
+        print(f"watching: sync + sweep every {every:g} h (Ctrl-C to stop)", flush=True)
+        try:
+            while True:
+                sync.run()
+                text, raw = sweep.run(); print(text, flush=True)
+                time.sleep(every * 3600)
+        except KeyboardInterrupt:
+            print("stopped"); return
+        return
     if a.cmd in ("watch", "clones", "diff"):
         from . import tools
         con = _con()
