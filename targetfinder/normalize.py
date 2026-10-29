@@ -223,7 +223,7 @@ def normalize_identifier(identifier, ttype=None, wildcard=False):
     return low.rstrip("/")
 
 def norm_key(identifier):
-    """Radar identity key: aggressive, stable across platforms' formatting quirks."""
+    """Identity key: aggressive, stable across platforms' formatting quirks."""
     s = (identifier or "").strip().lower()
     s = re.sub(r"^https?://", "", s)
     s = re.sub(r"^www\.", "", s)
