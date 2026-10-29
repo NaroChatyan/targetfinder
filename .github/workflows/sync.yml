@@ -5,7 +5,9 @@ name: sync
 
 on:
   schedule:
-    - cron: "17 * * * *"
+    # Hourly at :23. GitHub registers a schedule only when this file changes on the default branch, and runs
+    # it from a shared queue, so a slot can start up to an hour late; the minute avoids the top-of-hour rush.
+    - cron: "23 * * * *"
   workflow_dispatch:
 
 permissions:

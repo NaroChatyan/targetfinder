@@ -10,7 +10,7 @@ class SyncWorkflow(unittest.TestCase):
         self.text = open(os.path.join(WF, "sync.yml")).read()
 
     def test_schedule_permissions_concurrency_timeout(self):
-        for needle in ('cron: "17 * * * *"', "workflow_dispatch:", "contents: write", "group: sync", "timeout-minutes: 50", "import-snapshot --in public", "export-snapshot --out public"):
+        for needle in ('cron: "23 * * * *"', "workflow_dispatch:", "contents: write", "group: sync", "timeout-minutes: 50", "import-snapshot --in public", "export-snapshot --out public"):
             self.assertIn(needle, self.text, needle)
 
     def test_data_branch_is_a_single_orphan_commit(self):
