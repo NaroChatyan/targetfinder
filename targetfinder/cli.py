@@ -240,7 +240,7 @@ def cmd_init(a):
     from .collectors import load_all
     config.ensure_dirs()
     names = list(load_all())
-    out = a.out if os.path.isabs(a.out) else os.path.join(config.ROOT, a.out)
+    out = a.out if os.path.isabs(a.out) else os.path.join(config.HOME_DIR, a.out)
     print(f"database:   {config.DB_PATH}\ncollectors: {', '.join(names)}\nsnapshot:   {out}\n")
     print("Collecting. The first run records a baseline, so expect no change events yet.")
     def on_platform(name, st):
@@ -548,14 +548,14 @@ def main(argv=None):
         return EXIT_OK
     if a.cmd == "export-snapshot":
         from . import snapshot
-        out = a.out if os.path.isabs(a.out) else os.path.join(config.ROOT, a.out)
+        out = a.out if os.path.isabs(a.out) else os.path.join(config.HOME_DIR, a.out)
         res = snapshot.export_snapshot(_con(), out, [x.strip() for x in (a.exclude_platforms or "").split(",") if x.strip()])
         if a.json: emit({"out": out, "files": res})
         else: print(f"snapshot written to {out} ({len(res)} files)")
         return EXIT_OK
     if a.cmd == "import-snapshot":
         from . import snapshot
-        src = a.indir if os.path.isabs(a.indir) else os.path.join(config.ROOT, a.indir)
+        src = a.indir if os.path.isabs(a.indir) else os.path.join(config.HOME_DIR, a.indir)
         if not os.path.exists(os.path.join(src, "meta.json")): print(f"no snapshot at {src} (meta.json missing)"); return EXIT_NOT_FOUND
         res = snapshot.import_snapshot(_con(), src)
         if a.json: emit(res)

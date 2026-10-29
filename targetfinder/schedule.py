@@ -1,12 +1,15 @@
 """Keep the data fresh on the user's own machine: systemd user timer (Linux), launchd agent (macOS), schtasks command (Windows)."""
-import os, platform, subprocess
+import os, sys, platform, subprocess, shutil
 from . import config
 
 SERVICE = "targetfinder-sync"
 PLIST = "io.targetfinder.sync.plist"
 
-def bin_path():
-    return os.path.join(config.ROOT, "bin", "targetfinder")
+def bin_path(root=None, which=shutil.which):
+    """The command the scheduler runs: bin/targetfinder in a checkout, the installed console script otherwise."""
+    if config.in_checkout(root or config.ROOT):
+        return os.path.join(root or config.ROOT, "bin", "targetfinder")
+    return which("targetfinder") or f"{sys.executable} -m targetfinder"
 
 def unit_files(every_hours, bin_path, system=None):
     """Text of the scheduler files for this OS, keyed by file name."""
@@ -32,7 +35,7 @@ Description=TargetFinder collection (platforms + repository HEAD poll)
 [Service]
 Type=oneshot
 ExecStart={bin_path} sync
-WorkingDirectory={config.ROOT}
+WorkingDirectory={config.HOME_DIR}
 StandardOutput=append:{config.LOG_DIR}/sync.log
 StandardError=append:{config.LOG_DIR}/sync.log
 TimeoutStartSec=3000

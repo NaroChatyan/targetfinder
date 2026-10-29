@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "targetfinder"
+dynamic = ["version"]
+description = "Free, open-source bug bounty scope and change tracker that runs on your own machine. HackerOne, Bugcrowd, Intigriti, YesWeHack, HackenProof, Sherlock. CLI, HTTP API, MCP server. No API keys."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [{ name = "Naro Chatyan" }]
+keywords = ["bug-bounty", "bugbounty", "recon", "reconnaissance", "hackerone", "bugcrowd", "intigriti", "yeswehack", "hackenproof", "mcp", "mcp-server", "security"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Information Technology",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Security",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/NaroChatyan/targetfinder"
+Documentation = "https://github.com/NaroChatyan/targetfinder/tree/main/docs"
+Issues = "https://github.com/NaroChatyan/targetfinder/issues"
+"Published data" = "https://github.com/NaroChatyan/targetfinder/tree/data"
+
+[project.scripts]
+targetfinder = "targetfinder.cli:main"
+
+[tool.setuptools]
+packages = ["targetfinder", "targetfinder.collectors"]
+
+[tool.setuptools.dynamic]
+version = { attr = "targetfinder.config.VERSION" }

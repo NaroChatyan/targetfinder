@@ -6,6 +6,20 @@ Sherlock, tracks what changed since the last run (new programs, new targets, rem
 reward changes, pushes to in-scope source repositories) and serves it through a CLI, a local HTTP API
 and an MCP server for AI assistants.
 
+## What it looks like
+
+`targetfinder leads hot --free`: programs worth a look right now, free to submit to.
+
+![leads](docs/img/leads.png)
+
+`targetfinder program gitlab`: one program as a card, with its best-scored targets.
+
+![program card](docs/img/program.png)
+
+`targetfinder status`: collector health, so you know the data is fresh.
+
+![status](docs/img/status.png)
+
 ## Who this is for
 
 People hunting their first bounty. The hard part early on is not finding bugs, it is picking a target
