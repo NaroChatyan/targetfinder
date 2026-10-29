@@ -1,7 +1,7 @@
 """HackerOne: unauthenticated GraphQL directory + structured scopes + public stats."""
 import json
 from .. import http, config
-from . import register
+from . import register, program_id
 
 GQL = "https://hackerone.com/graphql"
 TEAM_FIELDS = """
@@ -103,7 +103,7 @@ def collect(existing, log):
             d = config.parse_ts(t["last_report_resolved_at"])
             if d: facts.append({"metric": "last_report_resolved_at", "amount": d.timestamp(), "currency": None, "unit": "epoch_seconds", "source_label": "Last report resolved", "source_field": "last_report_resolved_at", "period": "current", "basis": "reported"})
         programs.append({
-            "id": f"HackerOne:{handle}", "platform": "HackerOne", "handle": handle, "name": t.get("name") or handle,
+            "id": program_id("HackerOne", handle), "platform": "HackerOne", "handle": handle, "name": t.get("name") or handle,
             "link": f"https://hackerone.com/{handle}", "profile_picture": t.get("profile_picture"),
             "program_kind": "bounty" if offers else "vdp", "program_status": status, "is_active": status == "active",
             "reward_status": "paid" if offers else "no_reward", "bounty_min": float(t["base_bounty"]) if offers and t.get("base_bounty") else None,

@@ -26,8 +26,8 @@ def watch_report(con, since_ts):
     out = []
     for w in watch_list(con):
         pid = w["program_id"]
-        changes = queries.target_changes(con, None, True, True, True, None, None, None, None, None, None, 1, 100, None, False, since_ts, pid)["results"]
-        pushes = [r for r in queries.repo_changes(con, page_size=100, since_ts=since_ts, include_targets=False)["results"] if any(p["id"] == pid for p in r["programs"])]
+        changes = queries.target_changes(con, None, True, True, True, None, None, None, None, None, None, 1, 100, None, False, since_ts, pid)["items"]
+        pushes = queries.repo_changes(con, page_size=100, since_ts=since_ts, include_targets=False, program_id=pid)["items"]
         events = [dict(r) for r in con.execute("SELECT change_type, observed_at, before, after FROM program_events WHERE program_id=? AND observed_at>=? AND change_type!='scope' ORDER BY observed_at", (pid, since_ts))]
         out.append({"program_id": pid, "name": w["name"], "platform": w["platform"], "note": w["note"], "changes": changes, "pushes": pushes, "events": events})
     return out

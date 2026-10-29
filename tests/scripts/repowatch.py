@@ -19,11 +19,11 @@ st = repowatch.poll(con, print); st.pop("classified", None); assert st == {"poll
 heads["https://github.com/acme/app"] = ("main", "c" * 40); del heads["https://github.com/acme/lib"]
 st = repowatch.poll(con, print); assert st["changed"] == 1 and st["errors"] == 1, st
 rc = queries.repo_changes(con, page_size=5)
-r = rc["results"][0]; assert r["before_sha"] == "a" * 40 and r["after_sha"] == "c" * 40 and r["changes_url"].endswith("/compare/" + "a" * 40 + "..." + "c" * 40), r
+r = rc["items"][0]; assert r["before"] == "a" * 40 and r["after"] == "c" * 40 and r["compare_url"].endswith("/compare/" + "a" * 40 + "..." + "c" * 40), r
 assert r["programs"][0]["id"] == "T:acme" and r["targets"][0]["identifier"] == "https://github.com/acme/app", r
-cur = queries.repo_changes(con, page_size=5, after_id=0); assert cur["meta"]["next_after_id"] == r["id"] and cur["meta"]["pagination_mode"] == "cursor", cur["meta"]
+cur = queries.repo_changes(con, page_size=5, after_id=0); assert cur["page"]["next_after_id"] == r["id"] and cur["page"]["mode"] == "cursor", cur["page"]
 # target_changes cursor + free filter smoke
-tc = queries.target_changes(con, "added", page_size=10, after_id=0); assert tc["meta"]["pagination_mode"] == "cursor", tc["meta"]
+tc = queries.target_changes(con, "added", page_size=10, after_id=0); assert tc["page"]["mode"] == "cursor", tc["page"]
 # 30 consecutive failures deactivates the repo
 for _ in range(30): repowatch.poll(con, lambda m: None)
 assert con.execute("select active from repos where url='https://github.com/acme/lib'").fetchone()[0] == 0

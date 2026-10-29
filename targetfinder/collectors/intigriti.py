@@ -1,6 +1,6 @@
 """Intigriti: public programs API for metadata; scopes from bounty-targets-data (the public detail API is 403 for bots)."""
 from .. import http, config
-from . import register, need_detail, btd
+from . import register, need_detail, btd, program_id
 
 LIST = "https://app.intigriti.com/api/core/public/programs"
 STATUS = {1: "draft", 2: "upcoming", 3: "active", 4: "paused", 5: "closed", 6: "archived"}
@@ -36,7 +36,7 @@ def collect(existing, log):
         if not company or not handle:
             continue
         hid = handle if hcount[handle.lower()] == 1 else f"{company}/{handle}"
-        pid = f"Intigriti:{hid}"
+        pid = program_id("Intigriti", hid)
         st = STATUS.get(e.get("status"), "active")
         status = "active" if st in ("active", "upcoming") else "paused"
         mn = (e.get("minBounty") or {}).get("value"); mx = (e.get("maxBounty") or {}).get("value"); cur = (e.get("maxBounty") or {}).get("currency") or "EUR"

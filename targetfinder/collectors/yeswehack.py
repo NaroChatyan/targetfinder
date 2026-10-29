@@ -1,6 +1,6 @@
 """YesWeHack public API: programs list + per-program detail (scopes, submission credits, reports_count)."""
 from .. import http, config
-from . import register, need_detail
+from . import register, need_detail, program_id
 
 LIST = "https://api.yeswehack.com/programs?page={page}"
 
@@ -20,7 +20,7 @@ def collect(existing, log):
         slug = e.get("slug")
         if not slug or e.get("demo"):
             continue
-        pid = f"YesWeHack:{slug}"
+        pid = program_id("YesWeHack", slug)
         status = "paused" if e.get("disabled") or e.get("archived") else "active"
         is_vdp = bool(e.get("vdp")) or not e.get("bounty")
         marker = f"{e.get('last_update_at')}|{e.get('scopes_count')}|{e.get('report_submission_cost')}"

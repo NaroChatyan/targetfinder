@@ -1,6 +1,6 @@
 """Immunefi: bounty list and per-program scope assets from the Next.js RSC payloads."""
 from .. import http, config
-from . import register, need_detail
+from . import register, need_detail, program_id
 from .rsc import blob, extract_array
 
 LIST = "https://immunefi.com/bug-bounty/"
@@ -36,7 +36,7 @@ def collect(existing, log):
         slug = e.get("slug")
         if not slug:
             continue
-        pid = f"Immunefi:{slug}"
+        pid = program_id("Immunefi", slug)
         marker = f"{e.get('updatedDate')}|{e.get('maxBounty')}|{e.get('payToSubmitFeeUsdc')}|{e.get('pausedAt')}"
         targets = _scope(slug, log) if need_detail(existing, pid, marker) else None
         status = "paused" if e.get("pausedAt") else "active"

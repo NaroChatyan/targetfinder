@@ -57,10 +57,10 @@ def report_factor(report_count):
     return {"score": score, "label": f"{b.capitalize()} public report count", "reportCount": report_count, "fallback": None}
 
 def score_label(score):
-    if score >= 85: return "Elite Target"
-    if score >= 70: return "Strong Target"
-    if score >= 50: return "Potential Target"
-    return "Normal"
+    if score >= 85: return "top"
+    if score >= 70: return "strong"
+    if score >= 50: return "promising"
+    return "normal"
 
 def age_phrase(launch_at, now=None):
     now = now or config.utcnow()
@@ -83,8 +83,6 @@ def asset_phrase(ttype, wildcard, scope_tags):
 
 def competition_risk(report_count, launch_at, ttype, wildcard, scope_tags, recent_change_days=None, platform=None, has_data=True, asset=None):
     """Returns (risk, reason). Heuristic point model (docs/SCORING.md)."""
-    if platform == "Self-Hosted":
-        return "Unknown", "Self-Hosted programs do not have platform report-count data."
     parts = []; pts = 0
     b = report_bucket(report_count)
     if b:
@@ -99,8 +97,8 @@ def competition_risk(report_count, launch_at, ttype, wildcard, scope_tags, recen
     if phrase:
         parts.append(phrase); pts += v
     if not parts:
-        return "Unknown", "Not enough public report or target data to estimate competition risk."
-    risk = "Low" if pts <= 0 else ("Medium" if pts <= 2 else "High")
+        return "unknown", "Not enough public report or target data to estimate competition."
+    risk = "low" if pts <= 0 else ("medium" if pts <= 2 else "high")
     return risk, "Estimated from " + ", ".join(parts) + "."
 
 def program_asset_phrase(scope_tags):
@@ -121,7 +119,7 @@ def program_competition_risk(p, scope_tags):
     return competition_risk(p.get("report_count"), p.get("launch_at"), None, False, scope_tags, None, p.get("platform"), True,
                             asset=program_asset_phrase(scope_tags))
 
-def why_this_target(fresh, tf, rf, rp, risk, in_scope, eligible):
+def summary_sentence(fresh, tf, rf, rp, risk, in_scope, eligible):
     adj = {"Last 24 hours": "Fresh", "Last 7 days": "Fresh", "Last 30 days": "Recent", "Older than 30 days": "Older"}[fresh["label"]]
     noun = {"api": "API target", "graphql": "GraphQL target", "wildcard": "wildcard scope expansion", "staging": "staging/dev asset", "smart_contract": "smart contract target",
             "source_code": "source code target", "mobile": "mobile app target", "domain": "web/domain target", "generic": "generic/unclear target"}[tf["key"]]
@@ -129,10 +127,10 @@ def why_this_target(fresh, tf, rf, rp, risk, in_scope, eligible):
     if tf["key"] == "wildcard": when = ""
     elig = "eligible and in scope" if (in_scope and eligible) else ("in scope but not bounty-eligible" if in_scope else "out of scope")
     rew = {25: "high bounty potential", 22: "high bounty potential", 18: "strong reward potential", 14: "good reward potential", 10: "moderate reward potential", 6: "low reward potential", 0: "no disclosed bounty"}[rf["score"]]
-    return f"{adj} {noun}{when}, with {elig}, {rew}, {risk.lower()} competition risk."
+    return f"{adj} {noun}{when}, with {elig}, {rew}, {risk} competition."
 
 def score_target(t, program, now=None):
-    """t: target row dict; program: program dict. Returns the score block."""
+    """t: target row dict; program: program dict. Returns (score_block, competition_block)."""
     now = now or config.utcnow()
     changed = t.get("last_changed_at") or t.get("added_at")
     fresh = freshness_factor(changed, now)
@@ -140,22 +138,18 @@ def score_target(t, program, now=None):
     rf = reward_factor(program.get("bounty_max"), program.get("reward_status"))
     rp = report_factor(program.get("report_count"))
     score = fresh["score"] + tf["score"] + rf["score"] + rp["score"]
-    avail = 3 + (0 if rp["fallback"] else 1)
-    risk, reason = competition_risk(program.get("report_count"), program.get("launch_at"), t.get("target_type"), bool(t.get("wildcard")), t.get("scope_tags") or [],
-                                    fresh.get("days"), program.get("platform"), True)
-    return {
-        "scoreVersion": config.SCORING_VERSION,
-        "evidenceCoverage": {"available": avail, "total": 4},
-        "targetOpportunityScore": score,
-        "targetOpportunityLabel": score_label(score),
-        "targetScoreBreakdown": {"scoreVersion": config.SCORING_VERSION, "evidenceCoverage": {"available": avail, "total": 4},
-                                 "freshness": fresh, "targetType": tf, "reward": rf, "reportActivity": rp},
-        "competitionRisk": risk, "competitionRiskReason": reason,
-        "whyThisTarget": why_this_target(fresh, tf, rf, rp, risk, bool(t.get("in_scope")), bool(t.get("eligible_for_bounty"))),
-    }
+    level, reason = competition_risk(program.get("report_count"), program.get("launch_at"), t.get("target_type"), bool(t.get("wildcard")), t.get("scope_tags") or [],
+                                     fresh.get("days"), program.get("platform"), True)
+    block = {"value": score, "label": score_label(score), "version": config.SCORING_VERSION,
+             "factors": {"freshness": {"points": fresh["score"], "label": fresh["label"], "days": fresh["days"]},
+                         "target_type": {"points": tf["score"], "label": tf["label"]},
+                         "reward": {"points": rf["score"], "label": rf["label"], "max_bounty": rf["maxBounty"]},
+                         "reports": {"points": rp["score"], "label": rp["label"], "count": rp["reportCount"]}},
+             "summary": summary_sentence(fresh, tf, rf, rp, level, bool(t.get("in_scope")), bool(t.get("eligible_for_bounty")))}
+    return block, {"level": level, "reason": reason}
 
-# ---- program opportunity tag (elite/hot/strong/potential) -----------------------------------
-def opportunity_tag(p, scope_added_30d=0, now=None):
+# ---- program lead tiers (top/hot/solid/possible) ---------------------------------------------
+def lead(p, scope_added_30d=0, now=None):
     now = now or config.utcnow()
     added = config.parse_ts(p.get("added_at") or p.get("launch_at"))
     days = _days_between(added, now) if added else 9999
@@ -183,34 +177,28 @@ def opportunity_tag(p, scope_added_30d=0, now=None):
     else: rew = 30
     bonus = min(10, 2 * int(scope_added_30d or 0))
     score = round(0.4 * fresh + 0.3 * comp + 0.3 * rew + bonus, 1)
-    if score >= 78 and days <= 30: tier = "elite"
+    if score >= 78 and days <= 30: tier = "top"
     elif score >= 70: tier = "hot"
-    elif score >= 40: tier = "strong"
-    elif score >= 20: tier = "potential"
+    elif score >= 40: tier = "solid"
+    elif score >= 20: tier = "possible"
     else: tier = None
-    desc = {"elite": "Very fresh, lightly reported, and strong payout potential.", "hot": "Fresh or lightly reported with good payout potential.",
-            "strong": "Solid reward potential with manageable competition.", "potential": "Worth a look; weaker on freshness or competition."}
+    desc = {"top": "Very fresh, lightly reported, and strong payout potential.", "hot": "Fresh or lightly reported with good payout potential.",
+            "solid": "Solid reward potential with manageable competition.", "possible": "Worth a look; weaker on freshness or competition."}
     reason = [f"Added {int(days)} days ago" if days < 9999 else "Launch date unknown", (f"{rc} public reports" if rc is not None else "Report count unavailable"),
               (f"Up to ${mb:,.0f} bounty" if mb > 0 else "No disclosed bounty")]
     if scope_added_30d: reason.append(f"{scope_added_30d} confirmed new in-scope asset{'s' if scope_added_30d != 1 else ''} in 30 days")
-    return {"tier": tier, "label": tier.capitalize() if tier else None, "description": desc.get(tier), "reason": " • ".join(reason),
-            "opportunity_score": score, "freshness": fresh, "competition": comp, "reward": rew, "scope_bonus": bonus, "signal_count": 3,
-            "score_version": config.SCORING_VERSION, "evidence_coverage": {"available": 3 if rc is not None else 2, "total": 3},
-            "is_vdp": p.get("program_kind") == "vdp" or p.get("reward_status") == "no_reward"}
+    return {"tier": tier, "score": score, "factors": {"freshness": fresh, "competition": comp, "reward": rew, "scope_bonus": bonus}, "reason": " · ".join(reason),
+            "description": desc.get(tier), "version": config.SCORING_VERSION}
 
-# ---- submission cost --------------------------------------------------------------------------
-FREE_PLATFORMS = {"HackerOne", "BugCrowd", "Intigriti", "BugRap", "Bugbase", "Standoff365", "BI.ZONE", "Bug Bounty Switzerland", "Inspectiv", "Remedy",
-                  "IssueHunt", "GObugfree", "Compass Security", "CertiK", "HackZar", "AuditOne", "PatchDay", "Huntr"}
+# ---- submission fee ---------------------------------------------------------------------------
+# platforms that never charge per-report fees or deposits (the others publish the amount on the program page)
+FREE_PLATFORMS = {"HackerOne", "Bugcrowd", "Intigriti"}
 
-def submission_cost(platform, observed=None, updated_at=None):
-    """observed: dict(amount, unit, kind, source) from the collector; None for unknown."""
-    if platform == "Self-Hosted":
-        return None
+def submission_fee(platform, observed=None, updated_at=None):
+    """observed: dict(amount, unit, kind, source) from the collector; None for unknown. Returns the fee block or None when unknown."""
     if observed is not None:
-        d = {"amount": observed.get("amount", 0) or 0, "unit": observed.get("unit", "USD"), "kind": observed.get("kind", "fee"), "source": observed.get("source", "platform_catalog")}
-        if observed.get("maximum_amount") is not None: d["maximum_amount"] = observed["maximum_amount"]
-        d["updated_at"] = updated_at or config.iso()
-        return d
+        return {"amount": observed.get("amount", 0) or 0, "unit": observed.get("unit") or "USD", "kind": observed.get("kind") or "fee", "source": observed.get("source") or "platform",
+                "updated_at": updated_at or config.iso()}
     if platform in FREE_PLATFORMS:
-        return {"amount": 0, "unit": "USD", "kind": "fee", "source": "platform_policy", "policy_version": config.SUBMISSION_COST_POLICY_VERSION, "updated_at": updated_at}
-    return {"amount": 0, "unit": "USD", "kind": "fee", "source": "missing_defaults_free", "policy_version": config.SUBMISSION_COST_POLICY_VERSION, "updated_at": updated_at}
+        return {"amount": 0, "unit": "USD", "kind": "fee", "source": "platform_policy", "updated_at": updated_at}
+    return None

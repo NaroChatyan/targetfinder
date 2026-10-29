@@ -1,7 +1,7 @@
 """HackenProof: Nuxt __NUXT_DATA__ payload (devalue encoding) on the listing and program pages."""
 import re, json
 from .. import http, config
-from . import register, need_detail
+from . import register, need_detail, program_id
 
 LIST = "https://hackenproof.com/programs?page={page}"
 
@@ -97,7 +97,7 @@ def collect(existing, log):
         slug = e.get("slug")
         if not slug:
             continue
-        pid = f"HackenProof:{slug}"
+        pid = program_id("HackenProof", slug)
         marker = f"{e.get('lastUpdated')}|{e.get('reward')}|{e.get('status')}|{e.get('state')}"
         targets = None; det = None
         if need_detail(existing, pid, marker):

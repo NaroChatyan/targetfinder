@@ -8,9 +8,19 @@ program contract (plain dicts):
   payout_facts [ {metric, amount, currency, unit, source_label, source_field, period, basis} ], policy_url, safe_harbor, raw (small dict)
 target contract: identifier, hint_type, display_name, description, in_scope, eligible_for_bounty, severity_label, severity_score,
   source_url, source_added_at, metadata (dict)
-`existing` is {program_id: {"detail_marker": str, "detail_fetched_at": iso, "has_targets": bool}}.
+`existing` is {program id: {"detail_marker": str, "detail_fetched_at": iso, "has_targets": bool}}.
 """
 from .. import config
+
+# display name per platform slug; the slug is the first part of every program id
+PLATFORMS = {"hackerone": "HackerOne", "bugcrowd": "Bugcrowd", "intigriti": "Intigriti", "yeswehack": "YesWeHack", "hackenproof": "HackenProof", "immunefi": "Immunefi", "sherlock": "Sherlock"}
+
+def platform_slug(name):
+    return str(name).strip().lower().replace(" ", "-")
+
+def program_id(platform, handle):
+    """Program ids are `<platform-slug>:<handle>` in lowercase, e.g. hackerone:gitlab, sherlock:56."""
+    return f"{platform_slug(platform)}:{str(handle).strip().lower()}"
 
 def need_detail(existing, pid, marker):
     e = existing.get(pid)

@@ -1,7 +1,7 @@
 """Bugcrowd: public engagements.json listing; scopes from bounty-targets-data (hourly) with a live brief/changelog fallback."""
 import re, html as htmlmod
 from .. import http, config
-from . import register, need_detail, btd
+from . import register, need_detail, btd, program_id
 
 LIST = "https://bugcrowd.com/engagements.json?page={page}"
 
@@ -52,7 +52,7 @@ def _btd_targets(url_slug):
             return [o for o in out if o["identifier"]]
     return None
 
-@register("BugCrowd")
+@register("Bugcrowd")
 def collect(existing, log):
     page = 1; items = []
     while page <= 40:
@@ -72,7 +72,7 @@ def collect(existing, log):
         if not slug:
             continue
         handle = f"engagements/{slug}"
-        pid = f"BugCrowd:{handle}"
+        pid = program_id("Bugcrowd", handle)
         rs = e.get("rewardSummary") or {}
         mn, mx = _money(rs.get("minReward")), _money(rs.get("maxReward"))
         kind_label = ((e.get("productEngagementType") or {}).get("label") or "").lower()
@@ -89,11 +89,11 @@ def collect(existing, log):
             if targets is None:
                 targets, cid = _brief_scopes(slug, log)
         programs.append({
-            "id": pid, "platform": "BugCrowd", "handle": handle, "name": (e.get("name") or slug).strip(), "link": f"https://bugcrowd.com/engagements/{slug}",
+            "id": pid, "platform": "Bugcrowd", "handle": handle, "name": (e.get("name") or slug).strip(), "link": f"https://bugcrowd.com/engagements/{slug}",
             "profile_picture": e.get("logoUrl"), "program_kind": "vdp" if is_vdp else "bounty", "program_status": status, "is_active": status == "active",
             "reward_status": "no_reward" if is_vdp else ("paid" if (mx or mn) else "unknown"), "bounty_min": mn, "bounty_max": mx, "reward_currency": "USD",
             "launch_at": None, "launch_at_precision": None, "ends_at": e.get("endsAt"), "report_count": None, "report_count_source": None, "report_count_label": None,
             "fee": None, "detail_marker": marker, "targets": targets, "payout_facts": [], "policy_url": f"https://bugcrowd.com/engagements/{slug}", "safe_harbor": None,
             "raw": {"industry": e.get("industryName"), "engagement_type": kind_label, "managed": e.get("serviceLevel"), "tagline": (e.get("tagline") or "")[:200], "points_rewards": "points" in summary},
         })
-    return {"platform": "BugCrowd", "programs": programs, "complete": True}
+    return {"platform": "Bugcrowd", "programs": programs, "complete": True}

@@ -1,7 +1,7 @@
 """Sherlock bug bounties: RSC payload of audits.sherlock.xyz/bug-bounties (list + scopes on detail pages when available)."""
 import re, json
 from .. import http, config
-from . import register, need_detail
+from . import register, need_detail, program_id
 from .rsc import blob, extract_array, extract_object
 
 LIST = "https://audits.sherlock.xyz/bug-bounties"
@@ -64,8 +64,8 @@ def collect(existing, log):
         bid = e.get("id") or e.get("slug")
         if bid is None:
             continue
-        handle = f"bounty-{bid}" if str(bid).isdigit() else str(bid)
-        pid = f"Sherlock:{handle}"
+        handle = str(bid)
+        pid = program_id("Sherlock", handle)
         name = e.get("title") or e.get("protocol_name") or e.get("protocol") or e.get("name") or handle
         if isinstance(name, dict): name = name.get("name") or handle
         mx = _money(e.get("payout") or e.get("max_reward") or e.get("maxReward") or e.get("max_payout") or e.get("reward"))

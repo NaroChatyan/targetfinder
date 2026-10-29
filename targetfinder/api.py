@@ -1,7 +1,9 @@
-"""Local HTTP API server."""
-import json, re, urllib.parse, threading, traceback
+"""Local HTTP API server (routes in docs/API.md). List responses are {"items", "page"}; errors are {"error": {"code", "message"}}."""
+import json, re, urllib.parse, traceback
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
-from . import db, config, queries, activity, model
+from . import db, config, queries, activity
+
+MAX_BODY = 65536
 
 class Handler(BaseHTTPRequestHandler):
     server_version = f"targetfinder/{config.VERSION}"
@@ -16,19 +18,20 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", content_type + "; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
-        self.send_header("X-RateLimit-Limit", "100000"); self.send_header("X-RateLimit-Remaining", "99999"); self.send_header("X-RateLimit-Reset", "60")
         self.end_headers()
         self.wfile.write(body)
 
-    def _bad(self, msg, errors=None):
-        self._send(400, {"detail": msg, "errors": errors or [msg]})
+    def _error(self, code, kind, msg):
+        self._send(code, {"error": {"code": kind, "message": msg}})
+
+    def _bad(self, msg):
+        self._error(400, "bad_request", msg)
 
     def _route(self):
         u = urllib.parse.urlparse(self.path)
         path = urllib.parse.unquote(u.path)
-        for prefix in ("/api/v1/pro/", "/api/v1/", "/pro/", "/"):
-            if path.startswith(prefix):
-                path = path[len(prefix):]; break
+        if path.startswith("/api/"):
+            path = path[5:]
         q = {k: v[-1] for k, v in urllib.parse.parse_qs(u.query, keep_blank_values=True).items()}
         return path.strip("/"), q
 
@@ -41,13 +44,13 @@ class Handler(BaseHTTPRequestHandler):
             finally:
                 con.close()
         except Exception as ex:
-            self._send(500, {"detail": str(ex), "trace": traceback.format_exc(limit=4)})
+            self._send(500, {"error": {"code": "server_error", "message": str(ex)}, "trace": traceback.format_exc(limit=4)})
 
     def do_POST(self):
         path, q = self._route()
         n = int(self.headers.get("Content-Length") or 0)
-        if n > 65536:
-            return self._send(413, {"detail": "request body exceeds 65536 bytes"})
+        if n > MAX_BODY:
+            return self._error(413, "payload_too_large", f"request body exceeds {MAX_BODY} bytes")
         raw = self.rfile.read(n) if n else b""
         try:
             body = json.loads(raw.decode() or "{}")
@@ -58,17 +61,17 @@ class Handler(BaseHTTPRequestHandler):
             try:
                 if path == "targets/export":
                     pids = body.get("program_ids") or None
-                    if pids and len(pids) > 50: return self._bad("program_ids max 50")
-                    res = queries.export_targets(con, pids, body.get("platforms"), body.get("tags"), body.get("opportunity_levels"), bool(body.get("include_out_of_scope")), bool(body.get("include_ineligible")),
+                    if pids and len(pids) > 50: return self._bad("program_ids: max 50")
+                    res = queries.export_targets(con, pids, body.get("platforms"), body.get("tags"), body.get("tiers"), bool(body.get("include_out_of_scope")), bool(body.get("include_ineligible")),
                                                  body.get("format") or "json", int(body.get("limit") or 500))
                     if res["format"] == "csv":
                         return self._send(200, res.pop("csv"), "text/csv")
                     return self._send(200, res)
-                self._send(404, {"detail": "Not found"})
+                self._error(404, "not_found", "no such route")
             finally:
                 con.close()
         except Exception as ex:
-            self._send(500, {"detail": str(ex), "trace": traceback.format_exc(limit=4)})
+            self._send(500, {"error": {"code": "server_error", "message": str(ex)}, "trace": traceback.format_exc(limit=4)})
 
     def _get(self, con, path, q):
         Q = queries
@@ -77,91 +80,69 @@ class Handler(BaseHTTPRequestHandler):
         if path == "status":
             return self._send(200, Q.status(con))
         if path == "capabilities":
-            return self._send(200, Q.capabilities(con))
+            return self._send(200, {**Q.capabilities(con), "rankings": activity.capabilities(con)})
         if path == "programs":
             ps = Q.intv(q.get("page_size"), 50, 1, 100); page = Q.intv(q.get("page"), 1, 1)
-            kind = q.get("program_kind"); rs = q.get("reward_status")
-            if q.get("program_kind") and kind not in ("bounty", "vdp", "contest", "challenge"): return self._bad("invalid program_kind")
-            return self._send(200, Q.list_programs(con, Q.csv(q.get("platforms")), Q.csv(q.get("tags")), q.get("search"), q.get("updated_since"), page, ps, kind, rs, q.get("program_status"),
-                                                   Q.boolean(q.get("include_unlisted")), Q.boolean(q.get("free_submission_only")), Q.csv(q.get("competitionRisk")), full=Q.boolean(q.get("full"), True), order=q.get("order") or "name"))
-        m = re.match(r"^programs/(.+?)(/targets)?$", path)
+            kind = q.get("kind")
+            if kind and kind not in ("bounty", "vdp", "contest"): return self._bad("kind must be bounty|vdp|contest")
+            return self._send(200, Q.list_programs(con, Q.csv(q.get("platforms")), Q.csv(q.get("tags")), q.get("search"), q.get("updated_since"), page, ps, kind, q.get("reward_status"), q.get("status"),
+                                                   Q.boolean(q.get("include_unlisted")), Q.boolean(q.get("free_submission_only")), Q.csv(q.get("competition")), full=Q.boolean(q.get("full")), order=q.get("order") or "name"))
+        m = re.match(r"^programs/(.+?)(/targets|/payouts|/history)?$", path)
         if m:
-            pid = m.group(1)
-            if m.group(2):
+            pid, sub = m.group(1), m.group(2)
+            prow = Q.program_row(con, pid)
+            if prow is None: return self._error(404, "not_found", f"program {pid!r} not found")
+            if sub == "/targets":
                 ps = Q.intv(q.get("page_size"), 250, 1, 500); page = Q.intv(q.get("page"), 1, 1)
                 elig = q.get("eligibility") or "all"
                 if elig not in ("all", "eligible", "ineligible"): return self._bad("eligibility must be all|eligible|ineligible")
-                ms = q.get("minTargetScore"); ms = int(ms) if ms not in (None, "") else None
-                res = Q.program_targets(con, pid, elig, q.get("target_type"), q.get("search"), ms, q.get("targetOpportunityLabel"), q.get("competitionRisk"), page, ps, Q.boolean(q.get("include_inactive")))
-                return self._send(404, {"detail": "Program not found"}) if res is None else self._send(200, res)
-            res = Q.get_program(con, pid)
-            return self._send(404, {"detail": "Program not found"}) if res is None else self._send(200, res)
-        m = re.match(r"^opportunities/(elite|hot|strong|potential)$", path)
+                ms = q.get("min_score"); ms = int(ms) if ms not in (None, "") else None
+                return self._send(200, Q.program_targets(con, prow["id"], elig, q.get("type"), q.get("search"), ms, q.get("label"), q.get("competition"), page, ps, Q.boolean(q.get("include_inactive"))))
+            if sub == "/payouts":
+                return self._send(200, activity.program_payouts(con, prow))
+            if sub == "/history":
+                return self._send(200, activity.history_changes(con, prow["id"], Q.intv(q.get("limit"), 50, 1, 200), Q.intv(q.get("cursor"), 0, 0), q.get("since"), q.get("category")))
+            return self._send(200, Q.get_program(con, prow["id"]))
+        m = re.match(r"^leads/([a-z]+)$", path)
         if m:
-            return self._send(200, Q.opportunities(con, m.group(1), Q.csv(q.get("platforms")), Q.csv(q.get("tags")), q.get("search"), Q.intv(q.get("page"), 1, 1), Q.intv(q.get("page_size"), 50, 1, 100), q.get("updated_since")))
+            if m.group(1) not in Q.TIERS: return self._bad(f"tier must be one of {', '.join(Q.TIERS)}")
+            return self._send(200, Q.leads(con, m.group(1), Q.csv(q.get("platforms")), Q.csv(q.get("tags")), q.get("search"), Q.intv(q.get("page"), 1, 1), Q.intv(q.get("page_size"), 50, 1, 100), q.get("updated_since"),
+                                           free_submission_only=Q.boolean(q.get("free_submission_only"))))
         if path == "targets/search":
             qq = q.get("q")
             if qq is not None and qq != "" and not (2 <= len(qq) <= 512): return self._bad("q must be 2-512 characters")
             mm = q.get("match_mode") or "contains"
-            if mm not in ("contains", "exact", "suffix", "wildcard"): return self._bad("invalid match_mode")
+            if mm not in ("contains", "exact", "suffix", "wildcard"): return self._bad("match_mode must be contains|exact|suffix|wildcard")
             return self._send(200, Q.search_targets(con, qq or None, mm, Q.csv(q.get("platforms")), Q.csv(q.get("tags")), Q.boolean(q.get("include_out_of_scope")), Q.boolean(q.get("include_ineligible")),
                                                     Q.intv(q.get("page"), 1, 1), Q.intv(q.get("page_size"), 50, 1, 500)))
-        if path == "targets/changes":
-            ct = q.get("change_type")
-            if ct and ct not in ("added", "readded", "updated", "removed"): return self._bad("invalid change_type")
+        if path == "changes/targets":
+            ct = q.get("type")
+            if ct and ct not in Q.CHANGE_TYPES: return self._bad("type must be added|readded|updated|removed")
             after = q.get("after_id")
-            if after not in (None, "") and Q.intv(q.get("page"), 1, 1) != 1: return self._bad("cursor mode requires page=1")
-            ms = q.get("minTargetScore"); ms = int(ms) if ms not in (None, "") else None
+            ms = q.get("min_score"); ms = int(ms) if ms not in (None, "") else None
             return self._send(200, Q.target_changes(con, ct, Q.boolean(q.get("include_removed")), Q.boolean(q.get("include_ineligible")), Q.boolean(q.get("include_out_of_scope")), q.get("search"),
-                                                    Q.csv(q.get("platforms")), Q.csv(q.get("tags")), ms, q.get("targetOpportunityLabel"), q.get("competitionRisk"), Q.intv(q.get("page"), 1, 1),
+                                                    Q.csv(q.get("platforms")), Q.csv(q.get("tags")), ms, q.get("label"), q.get("competition"), Q.intv(q.get("page"), 1, 1),
                                                     Q.intv(q.get("page_size"), 50, 1, 100), int(after) if after not in (None, "") else None, Q.boolean(q.get("free_submission_only")), q.get("since"), q.get("program_id")))
-        if path == "repositories/changes":
+        if path == "changes/repos":
             after = q.get("after_id")
             return self._send(200, Q.repo_changes(con, q.get("search"), Q.csv(q.get("platforms")), Q.csv(q.get("tags")), Q.boolean(q.get("free_submission_only")), Q.boolean(q.get("include_targets"), True),
-                                                  Q.intv(q.get("page"), 1, 1), Q.intv(q.get("page_size"), 50, 1, 100), int(after) if after not in (None, "") else None, q.get("since")))
-        if path == "activity/capabilities":
+                                                  Q.intv(q.get("page"), 1, 1), Q.intv(q.get("page_size"), 50, 1, 100), int(after) if after not in (None, "") else None, q.get("since"), Q.csv(q.get("kinds")), q.get("program_id")))
+        m = re.match(r"^rankings/([a-z_]+)$", path)
+        if m:
+            res, err = activity.rankings(con, m.group(1), q.get("period"), q.get("sort"), q.get("direction") or "desc", Q.intv(q.get("limit"), 50, 1, 100), Q.csv(q.get("platforms")), Q.csv(q.get("tags")),
+                                         Q.csv(q.get("kinds")), Q.csv(q.get("labels")), Q.intv(q.get("cursor"), 0, 0))
+            return self._bad(err) if err else self._send(200, res)
+        if path == "rankings":
             return self._send(200, activity.capabilities(con))
-        if path == "activity/snapshot":
-            return self._send(200, activity.snapshot())
-        if path == "activity/rankings":
-            tab = q.get("tab")
-            if not tab: return self._bad("tab is required")
-            res, err = activity.rankings(con, tab, q.get("period"), q.get("sort"), q.get("direction") or "desc", Q.intv(q.get("limit"), 50, 1, 100), Q.csv(q.get("platforms")), Q.csv(q.get("tags")),
-                                         Q.csv(q.get("program_types")), Q.csv(q.get("labels")), Q.intv(q.get("next_cursor"), 0, 0), q.get("basis") or "tracked")
-            return self._send(422, {"detail": err}) if err else self._send(200, res)
-        m = re.match(r"^activity/events/(.+)$", path)
-        if m:
-            eid = m.group(1).replace("ev-", "")
-            e = con.execute("SELECT * FROM program_events WHERE id=?", (eid,)).fetchone()
-            if not e: return self._send(404, {"detail": "event not found"})
-            return self._send(200, {"event_id": f"ev-{e['id']}", "program_id": e["program_id"], "observed_at": e["observed_at"], "change_type": e["change_type"], "category": e["category"],
-                                    "items": [{"before": db.uj(e["before"]), "after": db.uj(e["after"]), "counts": db.uj(e["counts"])}], "meta": {"has_more": False, "next_cursor": None}})
-        m = re.match(r"^payouts/programs/(.+)$", path)
-        if m:
-            prow = Q.program_row(con, m.group(1))
-            return self._send(404, {"detail": "Program not found"}) if prow is None else self._send(200, activity.program_payouts(con, prow))
-        m = re.match(r"^history/programs/(.+)$", path)
-        if m:
-            prow = Q.program_row(con, m.group(1))
-            if prow is None: return self._send(404, {"detail": "Program not found"})
-            return self._send(200, activity.history_changes(con, prow["id"], Q.intv(q.get("limit"), 50, 1, 200), Q.intv(q.get("cursor"), 0, 0), q.get("since"), q.get("category")))
-        m = re.match(r"^activity/programs/(.+)$", path)
-        if m:
-            prow = Q.program_row(con, m.group(1))
-            if prow is None: return self._send(404, {"detail": "Program not found"})
-            return self._send(200, {"program": model.program_activity_block(con, prow), "activity_summary": model.activity_summary(con, prow["id"]), "as_of": config.iso()})
-        if path == "history/changes":
+        if path == "history":
             return self._send(200, activity.history_changes(con, q.get("program_id"), Q.intv(q.get("limit"), 50, 1, 200), Q.intv(q.get("cursor"), 0, 0), q.get("since"), q.get("category")))
-        m = re.match(r"^history/changes/(.+)$", path)
+        m = re.match(r"^history/ev-(\d+)$", path)
         if m:
-            eid = m.group(1).replace("ev-", "")
-            e = con.execute("SELECT * FROM program_events WHERE id=?", (eid,)).fetchone()
-            if not e: return self._send(404, {"detail": "change not found"})
-            return self._send(200, {"id": f"ev-{e['id']}", "program_id": e["program_id"], "observed_at": e["observed_at"], "change_type": e["change_type"], "category": e["category"],
-                                    "items": [{"before": db.uj(e["before"]), "after": db.uj(e["after"]), "counts": db.uj(e["counts"])}], "meta": {"has_more": False, "next_cursor": None}})
-        if path.startswith("analytics/"):
-            return self._send(503, {"detail": "analytics views are not available"})
-        self._send(404, {"detail": "Not found"})
+            e = con.execute("SELECT * FROM program_events WHERE id=?", (m.group(1),)).fetchone()
+            if not e: return self._error(404, "not_found", "event not found")
+            return self._send(200, {"id": f"ev-{e['id']}", "program_id": e["program_id"], "at": e["observed_at"], "type": e["change_type"], "category": e["category"],
+                                    "before": db.uj(e["before"]), "after": db.uj(e["after"]), "counts": db.uj(e["counts"]), "source": e["source"]})
+        self._error(404, "not_found", "no such route")
 
 def serve(host=None, port=None):
     host = host or config.API_HOST; port = port or config.API_PORT
@@ -169,7 +150,7 @@ def serve(host=None, port=None):
     db.connect().close()
     srv = ThreadingHTTPServer((host, port), Handler)
     srv.daemon_threads = True
-    print(f"TargetFinder API listening on http://{host}:{port}/api/v1/pro/  (Ctrl-C to stop)", flush=True)
+    print(f"TargetFinder API listening on http://{host}:{port}/api/  (Ctrl-C to stop)", flush=True)
     try:
         srv.serve_forever()
     except KeyboardInterrupt:

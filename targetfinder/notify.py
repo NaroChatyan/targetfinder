@@ -133,7 +133,7 @@ def build_digest(con, cfg, cursors):
             def score(c):
                 prog = {"bounty_max": c["bounty_max"], "reward_status": c["reward_status"], "report_count": c["report_count"], "launch_at": c["launch_at"], "platform": c["platform"]}
                 from . import intel
-                return intel.score_target({"target_type": c["target_type"], "wildcard": c["wildcard"], "scope_tags": db.uj(c["scope_tags"], []), "in_scope": 1, "eligible_for_bounty": 1, "last_changed_at": c["last_changed_at"], "added_at": c["added_at"]}, prog)["targetOpportunityScore"]
+                return intel.score_target({"target_type": c["target_type"], "wildcard": c["wildcard"], "scope_tags": db.uj(c["scope_tags"], []), "in_scope": 1, "eligible_for_bounty": 1, "last_changed_at": c["last_changed_at"], "added_at": c["added_at"]}, prog)[0]["value"]
             fresh = [c for c in fresh if score(c) >= nt["min_score"]]
         if fresh:
             byp = {}

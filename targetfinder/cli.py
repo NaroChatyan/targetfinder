@@ -19,15 +19,15 @@ def main(argv=None):
     s = sub.add_parser("diff", help="save the compare diff of a push"); s.add_argument("push_id", type=int); s.add_argument("--out-dir")
     s = sub.add_parser("notify", help="Discord/Telegram alerts"); s.add_argument("action", choices=["setup", "show", "test", "run", "preview"]); s.add_argument("--discord"); s.add_argument("--telegram-token"); s.add_argument("--telegram-chat")
     s.add_argument("--new-targets", choices=["on", "off"]); s.add_argument("--free-only", choices=["on", "off"]); s.add_argument("--min-score", type=int); s.add_argument("--platforms", help="csv, empty = all"); s.add_argument("--new-programs", choices=["on", "off"]); s.add_argument("--watchlist", choices=["on", "off"])
-    sub.add_parser("status")
-    s = sub.add_parser("programs"); s.add_argument("--search"); s.add_argument("--platforms"); s.add_argument("--tags"); s.add_argument("--kind"); s.add_argument("--free", action="store_true"); s.add_argument("--page", type=int, default=1); s.add_argument("--page-size", type=int, default=50); s.add_argument("--json", action="store_true")
+    sub.add_parser("status", help="database counts and collector state")
+    s = sub.add_parser("programs", help="list programs"); s.add_argument("--search"); s.add_argument("--platforms"); s.add_argument("--tags"); s.add_argument("--kind"); s.add_argument("--free", action="store_true"); s.add_argument("--page", type=int, default=1); s.add_argument("--page-size", type=int, default=50); s.add_argument("--json", action="store_true")
     s = sub.add_parser("program"); s.add_argument("id"); s.add_argument("--json", action="store_true")
     s = sub.add_parser("targets"); s.add_argument("id"); s.add_argument("--eligibility", default="all"); s.add_argument("--type"); s.add_argument("--json", action="store_true")
     s = sub.add_parser("search"); s.add_argument("q"); s.add_argument("--mode", default="contains"); s.add_argument("--json", action="store_true")
     s = sub.add_parser("changes"); s.add_argument("--type", choices=["added", "readded", "updated", "removed"]); s.add_argument("--since"); s.add_argument("--platforms"); s.add_argument("--free", action="store_true"); s.add_argument("--page-size", type=int, default=50); s.add_argument("--after-id", type=int); s.add_argument("--json", action="store_true")
     s = sub.add_parser("commits"); s.add_argument("--since"); s.add_argument("--platforms"); s.add_argument("--free", action="store_true"); s.add_argument("--page-size", type=int, default=50); s.add_argument("--after-id", type=int); s.add_argument("--json", action="store_true")
-    s = sub.add_parser("activity"); s.add_argument("tab"); s.add_argument("--period"); s.add_argument("--sort"); s.add_argument("--direction", default="desc"); s.add_argument("--limit", type=int, default=50); s.add_argument("--json", action="store_true")
-    s = sub.add_parser("opportunities"); s.add_argument("level", choices=["elite", "hot", "strong", "potential"]); s.add_argument("--json", action="store_true")
+    s = sub.add_parser("rankings", help="ranked programs per view"); s.add_argument("view", choices=["scope", "rewards", "updates", "status", "payouts", "response", "all"]); s.add_argument("--period"); s.add_argument("--sort"); s.add_argument("--direction", default="desc"); s.add_argument("--limit", type=int, default=50); s.add_argument("--json", action="store_true")
+    s = sub.add_parser("leads", help="programs by lead tier"); s.add_argument("tier", choices=["top", "hot", "solid", "possible"]); s.add_argument("--free", action="store_true"); s.add_argument("--json", action="store_true")
     s = sub.add_parser("resolve"); s.add_argument("text")
     s = sub.add_parser("payouts"); s.add_argument("id")
     sub.add_parser("mcp", help="run the stdio MCP server")
@@ -87,8 +87,8 @@ def main(argv=None):
             since = a.since or config.iso(config.utcnow() - dt.timedelta(days=7))
             for w in tools.watch_report(con, since):
                 print(f"== {w['program_id']} ({w['name']}) since {since}: {len(w['changes'])} target changes, {len(w['pushes'])} pushes, {len(w['events'])} events")
-                for c in w["changes"][:10]: print(f"    {c['changed_at']} {c['change_type']:8s} {c['target']['identifier'][:90]}")
-                for r in w["pushes"][:10]: print(f"    {r['observed_at']} push [{r.get('push_kind') or '?'}] {r['repository']['full_name']} {r['changes_url']}")
+                for c in w["changes"][:10]: print(f"    {c['at']} {c['type']:8s} {c['target']['identifier'][:90]}")
+                for r in w["pushes"][:10]: print(f"    {r['at']} push [{r.get('kind') or '?'}] {r['repo']['name']} {r['compare_url']}")
                 for e in w["events"]: print(f"    {e['observed_at']} {e['change_type']} {e['before'] or ''} -> {e['after'] or ''}")
             return
         if a.cmd == "clones":
@@ -111,52 +111,52 @@ def main(argv=None):
     if a.cmd == "programs":
         res = queries.list_programs(con, queries.csv(a.platforms), queries.csv(a.tags), a.search, None, a.page, a.page_size, a.kind, free_submission_only=a.free, full=False)
         if a.json: print(json.dumps(res, indent=1)); return
-        print(f"{res['meta']['total']} programs (page {a.page})")
-        for p in res["programs"]:
-            sc = p.get("submission_cost") or {}
-            print(f"  {p['id']:50s} {p.get('program_kind') or '':7s} {p.get('program_status') or '':8s} max={p.get('bounty_max')} fee={sc.get('amount')} {sc.get('unit') or ''} risk={p.get('competitionRisk')} targets={p['target_counts']['in_scope']} tags={','.join(p.get('scope_tags') or [])}")
+        print(f"{res['page']['total']} programs (page {a.page})")
+        for p in res["items"]:
+            fee = p.get("submission_fee") or {}
+            print(f"  {p['id']:50s} {p.get('kind') or '':7s} {p.get('status') or '':8s} max={p['rewards'].get('max')} fee={fee.get('amount', '?')} {fee.get('unit') or ''} competition={p['competition']['level']} targets={p['scope_counts']['in_scope']} tags={','.join(p.get('tags') or [])}")
         return
     if a.cmd == "program":
         res = queries.get_program(con, a.id)
         if res is None: print("not found"); sys.exit(1)
-        print(json.dumps(res, indent=1) if a.json else json.dumps({k: res[k] for k in ("id", "name", "platform", "link", "program_kind", "program_status", "reward_status", "bounty_min", "bounty_max", "submission_cost", "report_count", "competitionRisk", "competitionRiskReason", "scope_tags", "target_counts", "target_activity", "payout_summary")}, indent=1)); return
+        print(json.dumps(res if a.json else {k: res[k] for k in ("id", "name", "platform", "url", "kind", "status", "rewards", "submission_fee", "report_count", "competition", "tags", "scope_counts", "scope_activity", "payouts")}, indent=1)); return
     if a.cmd == "targets":
         res = queries.program_targets(con, a.id, a.eligibility, a.type, page_size=500)
         if res is None: print("not found"); sys.exit(1)
         if a.json: print(json.dumps(res, indent=1)); return
-        for t in res["targets"]:
-            print(f"  {'IN ' if t['in_scope'] else 'OUT'} {'$' if t['eligible_for_bounty'] else ' '} {t['target_type']:14s} {t.get('targetOpportunityScore') or '':>3} {t.get('competitionRisk') or '':7s} {t['identifier']}")
+        for t in res["items"]:
+            sc = t.get("score") or {}; cp = t.get("competition") or {}
+            print(f"  {'IN ' if t['in_scope'] else 'OUT'} {'$' if t['bounty_eligible'] else ' '} {t['type'] or '':14s} {sc.get('value') or '':>3} {cp.get('level') or '':7s} {t['identifier']}")
         return
     if a.cmd == "search":
         res = queries.search_targets(con, a.q, a.mode, page_size=100)
         if a.json: print(json.dumps(res, indent=1)); return
-        for r in res["results"]: print(f"  {r['program']['id']:45s} {r['target']['target_type']:14s} {r['target']['identifier']}")
-        print(f"{res['meta']['total']} results"); return
+        for r in res["items"]: print(f"  {r['program']['id']:45s} {r['target']['type'] or '':14s} {r['target']['identifier']}")
+        print(f"{res['page']['total']} results"); return
     if a.cmd == "changes":
         res = queries.target_changes(con, a.type, page_size=a.page_size, after_id=a.after_id, platforms=queries.csv(a.platforms), free_submission_only=a.free, since_ts=a.since)
         if a.json: print(json.dumps(res, indent=1)); return
-        for r in res["results"]:
-            t = r["target"]; p = r["program"]; sc = p.get("submission_cost") or {}
-            print(f"  {r['changed_at']} {r['change_type']:8s} [{p['platform']}] {p['name'][:30]:30s} fee={sc.get('amount')} {t.get('type'):13s} {t.get('targetOpportunityScore') or '':>3} {t['identifier'][:90]}")
-        print(json.dumps(res["meta"])); return
+        for r in res["items"]:
+            t = r["target"]; p = r["program"]; fee = p.get("submission_fee") or {}
+            print(f"  {r['at']} {r['type']:8s} [{p['platform']}] {(p['name'] or '')[:30]:30s} fee={fee.get('amount', '?')} {t.get('type') or '':13s} {(t.get('score') or {}).get('value') or '':>3} {t['identifier'][:90]}")
+        print(json.dumps(res["page"])); return
     if a.cmd == "commits":
         res = queries.repo_changes(con, platforms=queries.csv(a.platforms), free_submission_only=a.free, page_size=a.page_size, after_id=a.after_id, since_ts=a.since, include_targets=False)
         if a.json: print(json.dumps(res, indent=1)); return
-        for r in res["results"]:
-            print(f"  {r['observed_at']} {', '.join(p['id'] for p in r['programs']) or '-':45s} {r['repository']['full_name']:40s} {r['changes_url']}")
-        print(json.dumps(res["meta"])); return
-    if a.cmd == "activity":
-        res, err = activity.rankings(con, a.tab, a.period, a.sort, a.direction, a.limit)
+        for r in res["items"]:
+            print(f"  {r['at']} [{r.get('kind') or '?':6s}] {', '.join(p['id'] for p in r['programs']) or '-':45s} {r['repo']['name']:40s} {r['compare_url']}")
+        print(json.dumps(res["page"])); return
+    if a.cmd == "rankings":
+        res, err = activity.rankings(con, a.view, a.period, a.sort, a.direction, a.limit)
         if err: print("error:", err); sys.exit(2)
         if a.json: print(json.dumps(res, indent=1)); return
-        for r in res["rows"]:
-            x = {k: v for k, v in r.items() if k not in ("program", "labels", "label_details", "signals", "before", "after", "latest_before", "latest_after", "paid", "total")}
-            print(f"  {r['program']['name'][:40]:40s} {json.dumps(x)[:120]} {r['labels']}")
+        for r in res["items"]:
+            print(f"  {(r['program']['name'] or '')[:40]:40s} {json.dumps(r['metrics'])[:120]} {r['labels']}")
         return
-    if a.cmd == "opportunities":
-        res = queries.opportunities(con, a.level, page_size=100)
+    if a.cmd == "leads":
+        res = queries.leads(con, a.tier, page_size=100, free_submission_only=a.free)
         if a.json: print(json.dumps(res, indent=1)); return
-        for p in res["programs"]: print(f"  {p['opportunity_tag']['opportunity_score']:5.1f} {p['id']:50s} {p['opportunity_tag']['reason']}")
+        for p in res["items"]: print(f"  {p['lead']['score']:5.1f} {p['id']:50s} {p['lead']['reason']}")
         return
     if a.cmd == "resolve":
         print(json.dumps(queries.resolve_program(con, a.text), indent=1)); return
