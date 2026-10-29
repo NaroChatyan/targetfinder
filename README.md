@@ -4,8 +4,7 @@ Find bug-bounty targets worth your time, from public data, on your own machine. 
 the scope of every public program on HackerOne, Bugcrowd, Intigriti, YesWeHack, HackenProof and
 Sherlock, tracks what changed since the last run (new programs, new targets, removed targets, fee and
 reward changes, pushes to in-scope source repositories) and serves it through a CLI, a local HTTP API
-and an MCP server for AI assistants. No API keys, no paid accounts, no third-party packages: Python 3.11+
-and git are all it needs.
+and an MCP server for AI assistants.
 
 ## Who this is for
 
@@ -151,3 +150,4 @@ back, small amounts on cheap networks are welcome:
 | USDT (TRC-20) on TRON | `TE5HHm8tVSPYUfSz33dGtLS4HVoxfDgMVV` |
 
 Send on the network named next to the address; funds sent on another network cannot be recovered.
+HAPPY HACKING!!!
