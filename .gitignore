@@ -1,0 +1,9 @@
+data/
+*.db
+*.db-*
+*.db.bak
+__pycache__/
+*.pyc
+*.log
+sweeps/
+.superpowers/
