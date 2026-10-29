@@ -174,8 +174,11 @@ def export_targets(con, program_ids=None, platforms=None, tags=None, tiers=None,
         import csv as _csv, io
         buf = io.StringIO(); cols = ["program_id", "platform", "program_handle", "program_name", "program_status", "type", "identifier", "normalized", "in_scope", "bounty_eligible", "wildcard", "active", "tags", "languages", "source_url", "added_at"]
         w = _csv.writer(buf); w.writerow(cols)
+        def cell(v):
+            s = ",".join(str(x) for x in v) if isinstance(v, list) else ("" if v is None else str(v))
+            return "'" + s if s[:1] in ("=", "+", "-", "@", "\t", "\r") else s   # spreadsheet formula guard, applied after joining list columns
         for o in items:
-            w.writerow([("'" + str(o[c])) if str(o[c])[:1] in ("=", "+", "-", "@") else (",".join(o[c]) if isinstance(o[c], list) else o[c]) for c in cols])
+            w.writerow([cell(o[c]) for c in cols])
         res["csv"] = buf.getvalue()
     return res
 

@@ -1,5 +1,6 @@
 # Hourly collection: imports the previous snapshot from the `data` branch, syncs every platform, exports JSON snapshots
-# and commits them back to `data` only when something changed. Free on public repositories.
+# and rewrites `data` as a single orphan commit when something changed (the files are ~55 MB; keeping every hourly
+# version would grow the repository without bound — change history lives in the *_90d.json files). Free on public repositories.
 name: sync
 
 on:
@@ -47,14 +48,17 @@ jobs:
       - name: Export snapshots
         run: bin/targetfinder export-snapshot --out public
 
-      - name: Commit and push when something changed
+      - name: Rewrite the data branch as one orphan commit when something changed
         run: |
           cd public
-          if [ ! -e .git ]; then
+          if [ -e .git ]; then
+            git add -A
+            if git diff --cached --quiet; then echo "no changes"; exit 0; fi
+            git checkout -q --orphan data-next      # fresh root: the previous version is dropped, not extended
+          else
             git init -q -b data
             git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           fi
           git add -A
-          if git diff --cached --quiet; then echo "no changes"; exit 0; fi
           git -c user.name="targetfinder-bot" -c user.email="targetfinder-bot@users.noreply.github.com" commit -q -m "data: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          git push origin HEAD:data
+          git push --force origin HEAD:data

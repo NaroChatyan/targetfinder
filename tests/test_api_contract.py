@@ -129,6 +129,22 @@ class ApiContract(unittest.TestCase):
         hist = self.get("/api/history?category=scope")
         self.assertTrue(hist["items"]); self.assertEqual(hist["items"][0]["category"], "scope")
 
+    def test_bad_integer_params_are_400_without_traceback(self):
+        for path in ("/api/changes/targets?after_id=x", "/api/changes/repos?after_id=1.5", "/api/programs/testplat:acme/targets?min_score=abc", "/api/changes/targets?min_score=-"):
+            with self.subTest(path=path):
+                err = self.get(path, expect=400)
+                self.assertEqual(err["error"]["code"], "bad_request"); self.assertNotIn("trace", err)
+        err = self.get("/api/targets/export", body={"program_ids": ["testplat:acme"], "limit": "abc"}, expect=400)
+        self.assertEqual(err["error"]["code"], "bad_request")
+
+    def test_csv_export_escapes_formula_cells_including_list_columns(self):
+        con = db.connect()
+        con.execute("UPDATE targets SET scope_tags=? WHERE identifier='api.acme.test'", ('["=evil()","api"]',)); con.commit(); con.close()
+        self.addCleanup(lambda: (lambda c: (c.execute("UPDATE targets SET scope_tags=? WHERE identifier='api.acme.test'", ('["api","domain"]',)), c.commit(), c.close()))(db.connect()))
+        csv = self.get("/api/targets/export", body={"program_ids": ["testplat:acme"], "format": "csv"})
+        row = next(l for l in csv.splitlines() if ",api.acme.test," in l)
+        self.assertIn("'=evil()", row); self.assertNotIn(",=evil()", row)
+
     def test_errors_are_structured(self):
         err = self.get("/api/programs/nope:nope", expect=404)
         self.assertEqual(set(err["error"]), {"code", "message"}); self.assertEqual(err["error"]["code"], "not_found")

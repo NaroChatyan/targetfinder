@@ -5,6 +5,22 @@ from . import db, config, queries, activity
 
 MAX_BODY = 65536
 
+class BadParam(ValueError):
+    pass
+
+def opt_int(q, name, lo=None):
+    """Optional integer query/body parameter: None when absent, BadParam when not an integer or below `lo`."""
+    v = q.get(name)
+    if v in (None, ""):
+        return None
+    try:
+        x = int(str(v).strip())
+    except ValueError:
+        raise BadParam(f"{name} must be an integer")
+    if lo is not None and x < lo:
+        raise BadParam(f"{name} must be >= {lo}")
+    return x
+
 class Handler(BaseHTTPRequestHandler):
     server_version = f"targetfinder/{config.VERSION}"
 
@@ -43,8 +59,11 @@ class Handler(BaseHTTPRequestHandler):
                 self._get(con, path, q)
             finally:
                 con.close()
+        except BadParam as ex:
+            self._bad(str(ex))
         except Exception as ex:
-            self._send(500, {"error": {"code": "server_error", "message": str(ex)}, "trace": traceback.format_exc(limit=4)})
+            if config.API_LOG: traceback.print_exc()
+            self._send(500, {"error": {"code": "server_error", "message": str(ex)}})
 
     def do_POST(self):
         path, q = self._route()
@@ -63,15 +82,18 @@ class Handler(BaseHTTPRequestHandler):
                     pids = body.get("program_ids") or None
                     if pids and len(pids) > 50: return self._bad("program_ids: max 50")
                     res = queries.export_targets(con, pids, body.get("platforms"), body.get("tags"), body.get("tiers"), bool(body.get("include_out_of_scope")), bool(body.get("include_ineligible")),
-                                                 body.get("format") or "json", int(body.get("limit") or 500))
+                                                 body.get("format") or "json", opt_int(body, "limit", 1) or 500)
                     if res["format"] == "csv":
                         return self._send(200, res.pop("csv"), "text/csv")
                     return self._send(200, res)
                 self._error(404, "not_found", "no such route")
             finally:
                 con.close()
+        except BadParam as ex:
+            self._bad(str(ex))
         except Exception as ex:
-            self._send(500, {"error": {"code": "server_error", "message": str(ex)}, "trace": traceback.format_exc(limit=4)})
+            if config.API_LOG: traceback.print_exc()
+            self._send(500, {"error": {"code": "server_error", "message": str(ex)}})
 
     def _get(self, con, path, q):
         Q = queries
@@ -96,8 +118,7 @@ class Handler(BaseHTTPRequestHandler):
                 ps = Q.intv(q.get("page_size"), 250, 1, 500); page = Q.intv(q.get("page"), 1, 1)
                 elig = q.get("eligibility") or "all"
                 if elig not in ("all", "eligible", "ineligible"): return self._bad("eligibility must be all|eligible|ineligible")
-                ms = q.get("min_score"); ms = int(ms) if ms not in (None, "") else None
-                return self._send(200, Q.program_targets(con, prow["id"], elig, q.get("type"), q.get("search"), ms, q.get("label"), q.get("competition"), page, ps, Q.boolean(q.get("include_inactive"))))
+                return self._send(200, Q.program_targets(con, prow["id"], elig, q.get("type"), q.get("search"), opt_int(q, "min_score"), q.get("label"), q.get("competition"), page, ps, Q.boolean(q.get("include_inactive"))))
             if sub == "/payouts":
                 return self._send(200, activity.program_payouts(con, prow))
             if sub == "/history":
@@ -118,15 +139,12 @@ class Handler(BaseHTTPRequestHandler):
         if path == "changes/targets":
             ct = q.get("type")
             if ct and ct not in Q.CHANGE_TYPES: return self._bad("type must be added|readded|updated|removed")
-            after = q.get("after_id")
-            ms = q.get("min_score"); ms = int(ms) if ms not in (None, "") else None
             return self._send(200, Q.target_changes(con, ct, Q.boolean(q.get("include_removed")), Q.boolean(q.get("include_ineligible")), Q.boolean(q.get("include_out_of_scope")), q.get("search"),
-                                                    Q.csv(q.get("platforms")), Q.csv(q.get("tags")), ms, q.get("label"), q.get("competition"), Q.intv(q.get("page"), 1, 1),
-                                                    Q.intv(q.get("page_size"), 50, 1, 100), int(after) if after not in (None, "") else None, Q.boolean(q.get("free_submission_only")), q.get("since"), q.get("program_id")))
+                                                    Q.csv(q.get("platforms")), Q.csv(q.get("tags")), opt_int(q, "min_score"), q.get("label"), q.get("competition"), Q.intv(q.get("page"), 1, 1),
+                                                    Q.intv(q.get("page_size"), 50, 1, 100), opt_int(q, "after_id", 0), Q.boolean(q.get("free_submission_only")), q.get("since"), q.get("program_id")))
         if path == "changes/repos":
-            after = q.get("after_id")
             return self._send(200, Q.repo_changes(con, q.get("search"), Q.csv(q.get("platforms")), Q.csv(q.get("tags")), Q.boolean(q.get("free_submission_only")), Q.boolean(q.get("include_targets"), True),
-                                                  Q.intv(q.get("page"), 1, 1), Q.intv(q.get("page_size"), 50, 1, 100), int(after) if after not in (None, "") else None, q.get("since"), Q.csv(q.get("kinds")), q.get("program_id")))
+                                                  Q.intv(q.get("page"), 1, 1), Q.intv(q.get("page_size"), 50, 1, 100), opt_int(q, "after_id", 0), q.get("since"), Q.csv(q.get("kinds")), q.get("program_id")))
         m = re.match(r"^rankings/([a-z_]+)$", path)
         if m:
             res, err = activity.rankings(con, m.group(1), q.get("period"), q.get("sort"), q.get("direction") or "desc", Q.intv(q.get("limit"), 50, 1, 100), Q.csv(q.get("platforms")), Q.csv(q.get("tags")),

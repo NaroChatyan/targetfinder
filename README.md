@@ -83,7 +83,8 @@ The repository's GitHub Action runs `sync` every hour and commits JSON snapshots
 (tracked HEADs), and 90-day windows of `target_changes_90d.json`, `program_events_90d.json`,
 `repo_changes_90d.json`, `payouts_90d.json`, plus `meta.json`. Fetch them raw, or clone and run
 `bin/targetfinder import-snapshot --in public` to get a local database with history, then `sync` to
-continue from there. The `data` branch history may be squashed periodically; GitHub pauses scheduled
+continue from there. The `data` branch always holds exactly one commit (each run rewrites it, so the
+repository does not grow by 55 MB an hour); the 90-day history is inside the files. GitHub pauses scheduled
 workflows after 60 days without commits, which the hourly data commits prevent.
 
 ## Data sources
