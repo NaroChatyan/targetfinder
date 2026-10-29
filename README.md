@@ -20,7 +20,7 @@ without notice; the program page is the only source that counts when you submit.
 ## Quickstart
 
 ```bash
-git clone <this repository> targetfinder && cd targetfinder
+git clone https://github.com/NaroChatyan/targetfinder.git && cd targetfinder
 bin/targetfinder init                     # first run: collects every platform (10–20 min), writes public/ snapshots
 bin/targetfinder sweep                    # the report: new programs, fee changes, added/removed targets, pushes, rankings
 ```

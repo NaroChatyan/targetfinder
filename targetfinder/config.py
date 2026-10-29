@@ -3,7 +3,7 @@ import os, datetime as dt
 
 PROJECT = "TargetFinder"
 VERSION = "0.1.0"
-REPO_URL = os.environ.get("TARGETFINDER_REPO_URL", "https://github.com/targetfinder/targetfinder")
+REPO_URL = os.environ.get("TARGETFINDER_REPO_URL", "https://github.com/NaroChatyan/targetfinder")
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.environ.get("TARGETFINDER_DATA_DIR", os.path.join(ROOT, "data"))
 DB_PATH = os.environ.get("TARGETFINDER_DB", os.path.join(DATA_DIR, "targetfinder.db"))
