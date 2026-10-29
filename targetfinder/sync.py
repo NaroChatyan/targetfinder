@@ -286,17 +286,21 @@ def run(platforms=None, log=print, repo_poll=True, con=None):
     for name, fn in reg.items():
         if platforms and name not in platforms:
             continue
-        t0 = time.time()
+        t0 = time.time(); t0_iso = config.iso()
         try:
             existing = load_existing(con, name)
             res = fn(existing, L)
             st = apply_platform(con, name, res, L)
             st["seconds"] = round(time.time() - t0, 1)
             allstats[name] = st
+            con.execute("INSERT INTO collector_runs(platform, started_at, finished_at, ok, programs, error) VALUES(?,?,?,1,?,NULL)", (name, t0_iso, config.iso(), st.get("programs", 0)))
+            con.commit()
             L(f"{name}: {st}")
         except Exception as ex:
-            con.rollback()
+            con.rollback()   # nothing from this platform is kept: stored programs and targets stay as they were
             allstats[name] = {"error": str(ex)[:300]}
+            con.execute("INSERT INTO collector_runs(platform, started_at, finished_at, ok, programs, error) VALUES(?,?,?,0,0,?)", (name, t0_iso, config.iso(), str(ex)[:500]))
+            con.commit()
             L(f"{name} FAILED: {ex}\n{traceback.format_exc(limit=3)}")
     if repo_poll:
         try:

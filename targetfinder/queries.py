@@ -284,6 +284,20 @@ def status(con):
     counts = {t: con.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0] for t in ("programs", "targets", "target_changes", "repos", "repo_changes", "program_events", "payout_observations")}
     last = con.execute("SELECT started_at, finished_at, status, stats FROM sync_runs ORDER BY id DESC LIMIT 1").fetchone()
     live = set(load_all().keys())
-    plats = [{"platform": r[0], "programs": r[1], "collector": r[0] in live, "last_seen": r[2]} for r in con.execute("SELECT platform, COUNT(*), MAX(last_seen) FROM programs WHERE listed=1 GROUP BY platform ORDER BY 2 DESC")]
+    health = collector_health(con)
+    names = [r[0] for r in con.execute("SELECT platform FROM programs WHERE listed=1 GROUP BY platform ORDER BY COUNT(*) DESC")]
+    names += sorted(p for p in live if p not in names)
+    counts_by = {r[0]: (r[1], r[2]) for r in con.execute("SELECT platform, COUNT(*), MAX(last_seen) FROM programs WHERE listed=1 GROUP BY platform")}
+    plats = [{"platform": p, "programs": counts_by.get(p, (0, None))[0], "last_seen": counts_by.get(p, (0, None))[1], "collector": p in live, **health.get(p, {"last_ok_at": None, "last_error": None, "last_run_at": None, "stale": p in live})} for p in names]
     return {"version": config.VERSION, "counts": counts, "last_sync": db.row_to_dict(last) if last else None, "platforms": plats, "collectors": sorted(live),
+            "stale_platforms": [p["platform"] for p in plats if p["collector"] and p["stale"]],
             "tracking_since": db.kv_get(con, "tracking_since"), "last_sync_at": db.kv_get(con, "last_sync_at"), "db": config.DB_PATH}
+
+def collector_health(con):
+    """Per platform: last successful run, last error, stale flag (no success within STALE_AFTER_SECONDS)."""
+    out = {}
+    cutoff = config.iso(config.utcnow() - dt.timedelta(seconds=config.STALE_AFTER_SECONDS))
+    for r in con.execute("SELECT platform, MAX(CASE WHEN ok=1 THEN finished_at END) last_ok, MAX(finished_at) last_run FROM collector_runs GROUP BY platform"):
+        last = con.execute("SELECT ok, error FROM collector_runs WHERE platform=? ORDER BY id DESC LIMIT 1", (r["platform"],)).fetchone()
+        out[r["platform"]] = {"last_ok_at": r["last_ok"], "last_run_at": r["last_run"], "last_error": None if last["ok"] else last["error"], "stale": not r["last_ok"] or r["last_ok"] < cutoff}
+    return out

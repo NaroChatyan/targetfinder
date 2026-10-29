@@ -112,6 +112,11 @@ CREATE TABLE IF NOT EXISTS sync_runs (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   started_at TEXT, finished_at TEXT, kind TEXT, status TEXT, stats TEXT, log TEXT
 );
+CREATE TABLE IF NOT EXISTS collector_runs (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  platform TEXT NOT NULL, started_at TEXT, finished_at TEXT, ok INTEGER, programs INTEGER, error TEXT
+);
+CREATE INDEX IF NOT EXISTS ix_cr_plat ON collector_runs(platform, id);
 CREATE TABLE IF NOT EXISTS kv (k TEXT PRIMARY KEY, v TEXT);
 CREATE TABLE IF NOT EXISTS watchlist (program_id TEXT PRIMARY KEY, added_at TEXT, note TEXT);
 """

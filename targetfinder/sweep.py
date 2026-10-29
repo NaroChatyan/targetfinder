@@ -46,7 +46,12 @@ def run(since=None, out_dir=None, write=True, log=print, max_per_program=6, bulk
     prev = since or db.kv_get(con, "last_sweep_at") or config.iso(now - dt.timedelta(hours=28))
     raw = {"fetched_at": config.iso(now), "window_since": prev, "mode": "local", "options": {"max_per_program": max_per_program, "bulk_threshold": bulk_threshold, "all_pushes": all_pushes, "live_only": live_only}}
     L = [f"# TargetFinder sweep — {now.strftime('%Y-%m-%d %H:%M')} UTC", "",
-         f"Window: since **{prev}**. Filter rule: **free-submission only** is the only deprioritizer; nothing else is filtered.", ""]
+         f"Window: since **{prev}**. Filter rule: **free-submission only** is the only deprioritizer; nothing else is filtered."]
+    stale_cols = queries.status(con)["stale_platforms"]
+    raw["stale_collectors"] = stale_cols
+    if stale_cols:
+        L.append(f"**Stale collectors: {', '.join(stale_cols)}** — no successful run in the last {config.STALE_AFTER_SECONDS // 3600} h; their sections below may be out of date.")
+    L.append("")
     live = live_platforms()
     hide = lambda plat: live_only and plat not in live
     briefed = set()
