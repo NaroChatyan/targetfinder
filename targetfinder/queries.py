@@ -1,5 +1,5 @@
 """Query layer shared by the HTTP API, the MCP server, the CLI and the sweep. List responses are {"items": [...], "page": {...}}."""
-import math, datetime as dt
+import math, json, datetime as dt
 from . import db, config, model, intel
 
 TIERS = ("top", "hot", "solid", "possible")
@@ -292,7 +292,11 @@ def status(con):
     names += sorted(p for p in live if p not in names)
     counts_by = {r[0]: (r[1], r[2]) for r in con.execute("SELECT platform, COUNT(*), MAX(last_seen) FROM programs WHERE listed=1 GROUP BY platform")}
     plats = [{"platform": p, "programs": counts_by.get(p, (0, None))[0], "last_seen": counts_by.get(p, (0, None))[1], "collector": p in live, **health.get(p, {"last_ok_at": None, "last_error": None, "last_run_at": None, "stale": p in live})} for p in names]
-    return {"version": config.VERSION, "counts": counts, "last_sync": db.row_to_dict(last) if last else None, "platforms": plats, "collectors": sorted(live),
+    last_sync = db.row_to_dict(last) if last else None
+    if last_sync and isinstance(last_sync.get("stats"), str):
+        try: last_sync["stats"] = json.loads(last_sync["stats"])
+        except ValueError: pass
+    return {"version": config.VERSION, "counts": counts, "last_sync": last_sync, "platforms": plats, "collectors": sorted(live),
             "stale_platforms": [p["platform"] for p in plats if p["collector"] and p["stale"]],
             "tracking_since": db.kv_get(con, "tracking_since"), "last_sync_at": db.kv_get(con, "last_sync_at"), "db": config.DB_PATH}
 

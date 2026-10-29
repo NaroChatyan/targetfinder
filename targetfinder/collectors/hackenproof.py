@@ -37,6 +37,13 @@ def nuxt_data(html):
         return None
     return devalue(json.loads(m.group(1)))
 
+def _count(v):
+    """submittedReports is an int for public programs and the string "Private" otherwise."""
+    if isinstance(v, bool) or v is None: return None
+    if isinstance(v, (int, float)): return int(v)
+    try: return int(str(v).replace(",", "").strip())
+    except ValueError: return None
+
 def _money(s):
     if s is None: return None
     if isinstance(s, (int, float)): return float(s)
@@ -69,7 +76,7 @@ def parse_listing(html):
             "launch_at": config.iso(config.parse_ts(e.get("startDate"))) if config.parse_ts(e.get("startDate")) else None, "launch_at_precision": "date",
             "ends_at": None if e.get("isUnending") else (config.iso(config.parse_ts(e.get("endDate"))) if config.parse_ts(e.get("endDate")) else None),
             "targets_updated_at": config.iso(config.parse_ts(e.get("lastUpdated"))) if config.parse_ts(e.get("lastUpdated")) else None,
-            "report_count": e.get("submittedReports"), "report_count_source": "submitted_reports", "report_count_label": "submitted reports",
+            "report_count": _count(e.get("submittedReports")), "report_count_source": "submitted_reports", "report_count_label": "submitted reports",
             "fee": None, "detail_marker": f"{e.get('lastUpdated')}|{e.get('reward')}|{e.get('status')}|{e.get('state')}", "targets": None,
             "payout_facts": ([{"metric": "payout_total", "amount": _money(e["rewardPaid"]), "currency": "USD", "unit": "currency", "source_label": "Rewards paid", "source_field": "rewardPaid", "period": "all_time", "basis": "reported"}] if _money(e.get("rewardPaid")) else []),
             "policy_url": DETAIL.format(slug=slug), "safe_harbor": None,

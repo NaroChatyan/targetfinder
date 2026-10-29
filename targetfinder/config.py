@@ -21,6 +21,7 @@ HOST_DELAY = {"default": 1.0, "hackerone.com": 1.5, "bugcrowd.com": 1.0, "hacken
 DETAIL_REFRESH_SECONDS = 24 * 3600
 REPO_POLL_WORKERS = 4
 REPO_LS_REMOTE_TIMEOUT = 25
+REPO_LS_REMOTE_TIMEOUT_BY_HOST = {"gitlab.com": 60}
 # Immunefi's Terms of Use prohibit automated access (docs/PLATFORMS.md). Collector is OFF unless explicitly enabled.
 ENABLE_IMMUNEFI = os.environ.get("TARGETFINDER_ENABLE_IMMUNEFI", "0") == "1"
 SCORING_VERSION = 1

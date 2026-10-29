@@ -52,6 +52,8 @@ def repo_from_url(u):
         host = host[4:]
     if host not in REPO_HOSTS:
         return None
+    if any(ch in p.path for ch in "*,; ") or "://" in p.path:
+        return None   # org wildcards (acme/*) and comma-joined scope strings are not pollable repositories
     parts = [x for x in p.path.split("/") if x]
     if host == "gitlab.com":
         # gitlab supports nested groups: take everything up to '/-/' or the first known subresource

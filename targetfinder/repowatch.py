@@ -1,12 +1,25 @@
 """Poll default-branch HEADs of in-scope source repositories with `git ls-remote` and record pushes."""
-import subprocess, json, re
+import subprocess, json, re, urllib.parse
 from concurrent.futures import ThreadPoolExecutor
 from . import db, config
+
+PERMANENT_FAILURE_MARKERS = ("repository not found", "invalid username or token", "could not read username", "authentication failed", "malformed input", "does not appear to be a git repository")
+PERMANENT_FAILURE_LIMIT = 3     # consecutive not-found / auth rejections before the repo is retired
+TRANSIENT_FAILURE_LIMIT = 30    # timeouts, DNS blips, 5xx
+
+def timeout_for(url):
+    """Per-host ls-remote timeout: big GitLab monorepos answer HEAD slowly."""
+    host = (urllib.parse.urlparse(url).hostname or "").lower()
+    return config.REPO_LS_REMOTE_TIMEOUT_BY_HOST.get(host, config.REPO_LS_REMOTE_TIMEOUT)
+
+def is_permanent_failure(message):
+    m = (message or "").lower()
+    return any(k in m for k in PERMANENT_FAILURE_MARKERS)
 
 def ls_remote(url, timeout=None):
     """Return (ref_name, sha) for HEAD or raise."""
     env = {"GIT_TERMINAL_PROMPT": "0", "GIT_ASKPASS": "/bin/echo", "PATH": "/usr/bin:/bin:/usr/local/bin", "HOME": "/tmp"}
-    out = subprocess.run(["git", "ls-remote", "--symref", url, "HEAD"], capture_output=True, text=True, timeout=timeout or config.REPO_LS_REMOTE_TIMEOUT, env=env)
+    out = subprocess.run(["git", "ls-remote", "--symref", url, "HEAD"], capture_output=True, text=True, timeout=timeout or timeout_for(url), env=env)
     if out.returncode != 0:
         raise RuntimeError((out.stderr or "ls-remote failed").strip()[:200])
     ref = None; sha = None
@@ -23,7 +36,7 @@ def ls_remote(url, timeout=None):
     return ref or "HEAD", sha
 
 def active_repos(con):
-    return [db.row_to_dict(r) for r in con.execute("""SELECT r.* FROM repos r WHERE r.active=1 AND EXISTS (
+    return [db.row_to_dict(r) for r in con.execute("""SELECT r.* FROM repos r WHERE r.active=1 AND r.url NOT LIKE '%*%' AND r.url NOT LIKE '%,%' AND EXISTS (
         SELECT 1 FROM targets t JOIN programs p ON p.id=t.program_id WHERE t.repo_url=r.url AND t.is_active=1 AND t.in_scope=1 AND p.listed=1 AND p.is_active=1)""")]
 
 def poll(con, log=print, limit=None, workers=None):
@@ -47,7 +60,9 @@ def poll(con, log=print, limit=None, workers=None):
         if err:
             stats["errors"] += 1
             fc = (r["fail_count"] or 0) + 1
-            con.execute("UPDATE repos SET last_polled_at=?, last_error=?, fail_count=?, active=? WHERE id=?", (now, err, fc, 0 if fc >= 30 else 1, r["id"]))
+            limit = PERMANENT_FAILURE_LIMIT if is_permanent_failure(err) else TRANSIENT_FAILURE_LIMIT
+            if fc >= limit: stats["retired"] = stats.get("retired", 0) + 1
+            con.execute("UPDATE repos SET last_polled_at=?, last_error=?, fail_count=?, active=? WHERE id=?", (now, err, fc, 0 if fc >= limit else 1, r["id"]))
             continue
         ref, sha = res
         if r["head_sha"] is None:

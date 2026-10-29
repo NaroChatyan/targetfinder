@@ -3,6 +3,13 @@ Heuristic point models; see docs/SCORING.md."""
 import datetime as dt
 from . import config
 
+def as_count(v):
+    """Report counts arrive as int, numeric string, or labels like "Private": anything non-numeric is unknown (None)."""
+    if v is None or isinstance(v, bool): return None
+    if isinstance(v, (int, float)): return int(v)
+    try: return int(float(str(v).replace(",", "").strip()))
+    except ValueError: return None
+
 def _days_between(a, b):
     return max(0.0, (b - a).total_seconds() / 86400.0)
 
@@ -42,6 +49,7 @@ def reward_factor(bounty_max, reward_status):
     return {"score": 6, "label": "Low bounty", "maxBounty": mb, "isNoReward": False}
 
 def report_bucket(count):
+    count = as_count(count)
     if count is None: return None
     if count <= 2: return "very low"
     if count <= 10: return "low"
@@ -160,7 +168,7 @@ def lead(p, scope_added_30d=0, now=None):
     elif days <= 90: fresh = 40
     elif days <= 180: fresh = 25
     else: fresh = 10
-    rc = p.get("report_count")
+    rc = as_count(p.get("report_count"))
     if rc is None: comp = 50
     elif rc <= 2: comp = 100
     elif rc <= 10: comp = 85
