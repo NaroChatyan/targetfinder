@@ -1,0 +1,9 @@
+# Funding links shown behind the "Sponsor" button on GitHub.
+# Uncomment the lines you use; each takes a username on that service, or a full URL under `custom`.
+# github: your-github-username        # GitHub Sponsors (needs enrolment at github.com/sponsors)
+# ko_fi: your-kofi-name               # ko-fi.com
+# buy_me_a_coffee: your-bmac-name     # buymeacoffee.com
+# patreon: your-patreon-name
+# open_collective: your-collective
+# liberapay: your-liberapay-name
+# custom: ["https://paypal.me/yourname", "https://example.com/donate"]
