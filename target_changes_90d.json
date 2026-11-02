@@ -1,0 +1,434 @@
+[
+{
+"change_type": "added",
+"changed_at": "2026-10-30T01:14:14Z",
+"diff": null,
+"id": 1,
+"program_id": "hackerone:ui",
+"source": "HackerOne",
+"target_norm": "wifiman"
+},
+{
+"change_type": "updated",
+"changed_at": "2026-10-30T07:22:46Z",
+"diff": "{\"before\":{\"scope_tags\":[\"domain\",\"web\"]},\"after\":{\"scope_tags\":[\"api\",\"domain\",\"web\"]}}",
+"id": 2,
+"program_id": "hackerone:1win_com",
+"source": "HackerOne",
+"target_norm": "1w.run"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T07:22:46Z",
+"diff": null,
+"id": 3,
+"program_id": "hackerone:1win_com",
+"source": "HackerOne",
+"target_norm": "1win-partners.com"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T07:22:46Z",
+"diff": null,
+"id": 4,
+"program_id": "hackerone:1win_com",
+"source": "HackerOne",
+"target_norm": "1win.io"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T07:22:46Z",
+"diff": null,
+"id": 5,
+"program_id": "hackerone:1win_com",
+"source": "HackerOne",
+"target_norm": "forum.1win.io"
+},
+{
+"change_type": "updated",
+"changed_at": "2026-10-30T14:25:54Z",
+"diff": "{\"before\":{\"eligible_for_bounty\":1},\"after\":{\"eligible_for_bounty\":0}}",
+"id": 6,
+"program_id": "hackerone:wordpress",
+"source": "HackerOne",
+"target_norm": "create block theme"
+},
+{
+"change_type": "updated",
+"changed_at": "2026-10-30T14:25:54Z",
+"diff": "{\"before\":{\"eligible_for_bounty\":1},\"after\":{\"eligible_for_bounty\":0}}",
+"id": 7,
+"program_id": "hackerone:wordpress",
+"source": "HackerOne",
+"target_norm": "other github.com/wordpress repos"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T14:28:27Z",
+"diff": null,
+"id": 8,
+"program_id": "hackenproof:nonkyc-dot-io",
+"source": "HackenProof",
+"target_norm": "### support ticket system: no testing (effective 30 oct 2026)"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:36:46Z",
+"diff": null,
+"id": 9,
+"program_id": "bugcrowd:engagements/stonikbyte",
+"source": "Bugcrowd",
+"target_norm": "marketplace.atlassian.com/apps/3937617820/team-wallboard-for-agile-scrum-kanban-itsm-dashboards?hosting=cloud&tab=overview"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:36:46Z",
+"diff": null,
+"id": 10,
+"program_id": "bugcrowd:engagements/stonikbyte",
+"source": "Bugcrowd",
+"target_norm": "marketplace.atlassian.com/apps/4240011577/work-breakdown-structure-link-hierarchy-dependency-tree?hosting=cloud&tab=overview"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:36:46Z",
+"diff": null,
+"id": 11,
+"program_id": "bugcrowd:engagements/stonikbyte",
+"source": "Bugcrowd",
+"target_norm": "marketplace.atlassian.com/apps/1157161318/countdown-regional-clock?hosting=cloud&tab=overview"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:36:46Z",
+"diff": null,
+"id": 12,
+"program_id": "bugcrowd:engagements/stonikbyte",
+"source": "Bugcrowd",
+"target_norm": "marketplace.atlassian.com/apps/2113139725/formula-cards-gauge-charts-rag-reports-custom-kpis?hosting=cloud&tab=overview"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:36:46Z",
+"diff": null,
+"id": 13,
+"program_id": "bugcrowd:engagements/stonikbyte",
+"source": "Bugcrowd",
+"target_norm": "marketplace.atlassian.com/apps/2194903109/cycle-time-lead-time-time-in-status-charts-for-agile?hosting=cloud&tab=overview"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:36:46Z",
+"diff": null,
+"id": 14,
+"program_id": "bugcrowd:engagements/stonikbyte",
+"source": "Bugcrowd",
+"target_norm": "marketplace.atlassian.com/apps/89496753/pivot-worklog-reports-timesheets-charts-heatmaps?hosting=cloud&tab=overview"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:36:46Z",
+"diff": null,
+"id": 15,
+"program_id": "bugcrowd:engagements/stonikbyte",
+"source": "Bugcrowd",
+"target_norm": "marketplace.atlassian.com/apps/1855294554/pivot-tables-charts-heatmaps-for-jira-agile-reporting?hosting=cloud&tab=overview"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": null,
+"id": 16,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0x3909f8b833a8beba57cef8c6e713e885b6c359ce"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": null,
+"id": 17,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0xd5e7843396308aeb6c6d790200923a18aeeb1fa0"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": null,
+"id": 18,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0xa5283582951ae0cf72be4bea54da63d199264b78"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": null,
+"id": 19,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0xdbc5d940a791016d5c3c67479898b38525655e46"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": null,
+"id": 20,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0x6be6951014c5cccefee66c1893bc752c9b34948b"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": null,
+"id": 21,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0xafdd4c3ce0585c14af3700c4e499278bf9404374"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": null,
+"id": 22,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0x23ce95c201e31c0cd0cd17a41309b5068d4fe596"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": null,
+"id": 23,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0x2149c6b85ba6abc801c4b181e66622e38d35bbf2"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": null,
+"id": 24,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0x7d98caccdd54b7316e51bf528ab842a993a2776f"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": null,
+"id": 25,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0x062d8ddc72fe11637ebbff493208ae670550f2d7"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": null,
+"id": 26,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0x5e97ea50bbf36a830e3abab43ba6eeea5a29769c"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": null,
+"id": 27,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0x328d40f356fd0aba28db98c57450df5a4d379e5a"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": null,
+"id": 28,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0x80b5f701f698605ea05c99c6f80372ad6dd8d4df"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": null,
+"id": 29,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0xdd4dd5eb3a78ad4739193e355d8abe5b9b1b5f1c"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": null,
+"id": 30,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0x010d354c293bea6daa5a2593049346186a758cf8"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": null,
+"id": 31,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0x0b3eceda818318c0f0fc4445ce5376cf538346b5"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": null,
+"id": 32,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0xbeb4dc6f3dceb3b4656cc7e661737b5de489f123"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": null,
+"id": 33,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0x00f8b85b10239476a2170f7f0d6a5449b8ca4771"
+},
+{
+"change_type": "removed",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": "{\"before\":{\"is_active\":true},\"after\":{\"is_active\":false}}",
+"id": 34,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0x2406472c93e1ba596ff14a62e7b450f93f9b7af3"
+},
+{
+"change_type": "removed",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": "{\"before\":{\"is_active\":true},\"after\":{\"is_active\":false}}",
+"id": 35,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0xa3198c58eda8ea74132a5e3c6e5e10c8fba3e438"
+},
+{
+"change_type": "removed",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": "{\"before\":{\"is_active\":true},\"after\":{\"is_active\":false}}",
+"id": 36,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0x1ef71af6a8874a69cf98a7db56c40d829e06407b"
+},
+{
+"change_type": "removed",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": "{\"before\":{\"is_active\":true},\"after\":{\"is_active\":false}}",
+"id": 37,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0x3de62ff7eaa843acd85ba4ee28a4981e890b1f4d"
+},
+{
+"change_type": "removed",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": "{\"before\":{\"is_active\":true},\"after\":{\"is_active\":false}}",
+"id": 38,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0xb2c8252c9bc86b87a529a4b6a951b061f20e5ae1"
+},
+{
+"change_type": "removed",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": "{\"before\":{\"is_active\":true},\"after\":{\"is_active\":false}}",
+"id": 39,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0xf0cccb93230d012226ef21919143f201399dead1"
+},
+{
+"change_type": "removed",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": "{\"before\":{\"is_active\":true},\"after\":{\"is_active\":false}}",
+"id": 40,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0xa6fef647516bbddcdcaa0d16b5f5d29e9f3759fd"
+},
+{
+"change_type": "removed",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": "{\"before\":{\"is_active\":true},\"after\":{\"is_active\":false}}",
+"id": 41,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0x5c83ed90ef4728173fe7d9a7341b0851b8b7d95a"
+},
+{
+"change_type": "removed",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": "{\"before\":{\"is_active\":true},\"after\":{\"is_active\":false}}",
+"id": 42,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0xa972232e6c1860586e1d66ac690d30dab843049d"
+},
+{
+"change_type": "removed",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": "{\"before\":{\"is_active\":true},\"after\":{\"is_active\":false}}",
+"id": 43,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0xcb89c881e01f4b77e774ba8e1fb2515e61ce6f92"
+},
+{
+"change_type": "removed",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": "{\"before\":{\"is_active\":true},\"after\":{\"is_active\":false}}",
+"id": 44,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0xb3f3b37fbbff05d1df12c4022705e9e8552ade9f"
+},
+{
+"change_type": "removed",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": "{\"before\":{\"is_active\":true},\"after\":{\"is_active\":false}}",
+"id": 45,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0x7e0420cdc6a29f96e53d2585b45eae6c727c0034"
+},
+{
+"change_type": "removed",
+"changed_at": "2026-10-30T19:49:10Z",
+"diff": "{\"before\":{\"is_active\":true},\"after\":{\"is_active\":false}}",
+"id": 46,
+"program_id": "sherlock:437",
+"source": "Sherlock",
+"target_norm": "basescan.org/address/0x200cb3b670e2debe10dc78badd3aa2c900fd614b"
+},
+{
+"change_type": "added",
+"changed_at": "2026-10-31T00:00:02Z",
+"diff": null,
+"id": 47,
+"program_id": "hackerone:vercel",
+"source": "HackerOne",
+"target_norm": "github.com/better-auth/better-auth"
+},
+{
+"change_type": "removed",
+"changed_at": "2026-10-31T00:00:02Z",
+"diff": "{\"before\":{\"is_active\":true},\"after\":{\"is_active\":false}}",
+"id": 48,
+"program_id": "hackerone:twilio",
+"source": "HackerOne",
+"target_norm": "github.com/stytchauth"
+}
+]
