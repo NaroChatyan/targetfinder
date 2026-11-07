@@ -1,0 +1,26 @@
+{
+"counts": {
+"collector_runs.json": 6,
+"payouts_90d.json": 29187,
+"program_events_90d.json": 115,
+"programs.json": 1512,
+"repo_changes_90d.json": 1782,
+"repos.json": 777,
+"target_changes_90d.json": 384,
+"targets.json": 55399
+},
+"excluded_platforms": [],
+"exported_at": "2026-11-07T17:20:49Z",
+"kv": {
+"last_sync_at": "2026-11-07T17:20:49Z",
+"platform_synced:Bugcrowd": "2026-11-07T17:00:35Z",
+"platform_synced:HackenProof": "2026-11-07T17:18:53Z",
+"platform_synced:HackerOne": "2026-11-07T17:00:07Z",
+"platform_synced:Intigriti": "2026-11-07T17:00:36Z",
+"platform_synced:Sherlock": "2026-11-07T17:19:53Z",
+"platform_synced:YesWeHack": "2026-11-07T17:01:51Z",
+"tracking_since": "2026-10-29T18:16:17Z"
+},
+"version": "0.1.0",
+"window_days": 90
+}
