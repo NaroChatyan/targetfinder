@@ -1,0 +1,50 @@
+[
+{
+"error": null,
+"finished_at": "2026-11-14T06:49:30Z",
+"ok": 1,
+"platform": "Bugcrowd",
+"programs": 296,
+"started_at": "2026-11-14T06:49:11Z"
+},
+{
+"error": null,
+"finished_at": "2026-11-14T06:51:13Z",
+"ok": 1,
+"platform": "HackenProof",
+"programs": 331,
+"started_at": "2026-11-14T06:49:37Z"
+},
+{
+"error": null,
+"finished_at": "2026-11-14T06:49:11Z",
+"ok": 1,
+"platform": "HackerOne",
+"programs": 594,
+"started_at": "2026-11-14T06:43:33Z"
+},
+{
+"error": null,
+"finished_at": "2026-11-14T06:49:31Z",
+"ok": 1,
+"platform": "Intigriti",
+"programs": 197,
+"started_at": "2026-11-14T06:49:30Z"
+},
+{
+"error": null,
+"finished_at": "2026-11-14T06:51:33Z",
+"ok": 1,
+"platform": "Sherlock",
+"programs": 37,
+"started_at": "2026-11-14T06:51:13Z"
+},
+{
+"error": null,
+"finished_at": "2026-11-14T06:49:37Z",
+"ok": 1,
+"platform": "YesWeHack",
+"programs": 52,
+"started_at": "2026-11-14T06:49:31Z"
+}
+]
