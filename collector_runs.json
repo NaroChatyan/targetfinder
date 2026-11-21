@@ -1,0 +1,50 @@
+[
+{
+"error": null,
+"finished_at": "2026-11-21T11:25:33Z",
+"ok": 1,
+"platform": "Bugcrowd",
+"programs": 296,
+"started_at": "2026-11-21T11:25:14Z"
+},
+{
+"error": null,
+"finished_at": "2026-11-21T11:26:26Z",
+"ok": 1,
+"platform": "HackenProof",
+"programs": 332,
+"started_at": "2026-11-21T11:25:37Z"
+},
+{
+"error": "hackerone graphql: [{\"message\": \"Timeout on Team.reports_received_last_90_days\", \"locations\": [{\"line\": 5, \"column\": 77}], \"path\": [\"teams\", \"edges\", 0, \"node\", \"reports_received_last_90_days\"]}, {\"message\": \"Timeout on Team.last_report_resolved_at\", \"locations\": [{\"line\": 6, \"column\": 3}], \"path\": [\"teams\", \"edges\", ",
+"finished_at": "2026-11-21T11:25:14Z",
+"ok": 0,
+"platform": "HackerOne",
+"programs": 0,
+"started_at": "2026-11-21T11:24:56Z"
+},
+{
+"error": null,
+"finished_at": "2026-11-21T11:25:34Z",
+"ok": 1,
+"platform": "Intigriti",
+"programs": 199,
+"started_at": "2026-11-21T11:25:33Z"
+},
+{
+"error": null,
+"finished_at": "2026-11-21T11:26:45Z",
+"ok": 1,
+"platform": "Sherlock",
+"programs": 39,
+"started_at": "2026-11-21T11:26:26Z"
+},
+{
+"error": null,
+"finished_at": "2026-11-21T11:25:37Z",
+"ok": 1,
+"platform": "YesWeHack",
+"programs": 52,
+"started_at": "2026-11-21T11:25:34Z"
+}
+]
