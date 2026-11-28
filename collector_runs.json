@@ -1,0 +1,50 @@
+[
+{
+"error": null,
+"finished_at": "2026-11-28T13:16:31Z",
+"ok": 1,
+"platform": "Bugcrowd",
+"programs": 296,
+"started_at": "2026-11-28T13:16:09Z"
+},
+{
+"error": null,
+"finished_at": "2026-11-28T13:17:40Z",
+"ok": 1,
+"platform": "HackenProof",
+"programs": 333,
+"started_at": "2026-11-28T13:16:45Z"
+},
+{
+"error": "hackerone graphql: [{\"message\": \"Timeout on StructuredScope.updated_at\", \"locations\": [{\"line\": 10, \"column\": 210}], \"path\": [\"teams\", \"edges\", 34, \"node\", \"structured_scopes\", \"edges\", 212, \"node\", \"updated_at\"]}, {\"message\": \"Timeout on StructuredScopeEdge.node\", \"locations\": [{\"line\": 10, \"column\": 95}], \"path\": [\"",
+"finished_at": "2026-11-28T13:16:09Z",
+"ok": 0,
+"platform": "HackerOne",
+"programs": 0,
+"started_at": "2026-11-28T13:15:53Z"
+},
+{
+"error": null,
+"finished_at": "2026-11-28T13:16:32Z",
+"ok": 1,
+"platform": "Intigriti",
+"programs": 198,
+"started_at": "2026-11-28T13:16:31Z"
+},
+{
+"error": null,
+"finished_at": "2026-11-28T13:18:03Z",
+"ok": 1,
+"platform": "Sherlock",
+"programs": 41,
+"started_at": "2026-11-28T13:17:40Z"
+},
+{
+"error": null,
+"finished_at": "2026-11-28T13:16:45Z",
+"ok": 1,
+"platform": "YesWeHack",
+"programs": 50,
+"started_at": "2026-11-28T13:16:32Z"
+}
+]
